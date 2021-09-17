@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { errorsHandler } from "./middlewares/errors";
+import { setCORSHeaders } from "./middlewares/headers";
 
 import authRoutes from "./routes/auth";
 
@@ -9,6 +10,8 @@ if(process.env.NODE_ENV !== "production") {
 }
 
 const app = express();
+
+app.use(setCORSHeaders);
 
 app.use(express.json());
 
