@@ -4,6 +4,6 @@ export const signin = (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-export const singup = (req: Request, res: Response, next: NextFunction) => {
+export const signup = (req: Request, res: Response, next: NextFunction) => {
     
 };
