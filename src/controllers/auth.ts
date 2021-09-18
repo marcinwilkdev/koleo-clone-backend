@@ -27,13 +27,9 @@ export const signin = async (
             throw new HttpException("Wrong password.", 401);
         }
 
-        if (!process.env.JWT_SECRET) {
-            throw new Error();
-        }
-
         const token = jwt.sign(
             { userId: user._id.toString() },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || "somesupersecret",
             { expiresIn: "1h" }
         );
 
