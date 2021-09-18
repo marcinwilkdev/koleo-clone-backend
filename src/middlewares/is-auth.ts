@@ -16,11 +16,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
         throw new HttpException("Authorization failed.", 401);
     }
 
-    if(!process.env.JWT_SECRET) {
-        throw new Error();
-    }
-
-    const jwtPayload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
+    const jwtPayload = jwt.verify(token, process.env.JWT_SECRET || "somesupersecret") as JwtPayload;
 
     if(!jwtPayload) {
         throw new HttpException("Authorization failed.", 401);
@@ -29,4 +25,4 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
     req.userId = jwtPayload.userId;
 
     next();
-}; // NOT TESTED
+};
