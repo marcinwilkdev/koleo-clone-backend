@@ -1,4 +1,7 @@
 {
+  "exclude": [
+    "**/*.test.ts"
+  ],
   "ts-node": {
     "files": true
   },
