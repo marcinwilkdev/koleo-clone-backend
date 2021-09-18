@@ -3,9 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import { signin } from "../../src/controllers/auth";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 import User from "../../src/models/user";
 import HttpException from "../../src/util/HttpException";
+import { stub } from "sinon";
 
 describe("auth controller - signin", () => {
     const res = {
@@ -33,12 +35,9 @@ describe("auth controller - signin", () => {
                 "mongodb+srv://root:D7alUq7tPN5yVyxK@cluster0.hew9q.mongodb.net/koleo-dev-test?retryWrites=true&w=majority"
             )
             .then(() => {
-                return bcryptjs.hash("test", 12);
-            })
-            .then((hashedPassword) => {
                 const user = new User({
                     email: "test@test.com",
-                    password: hashedPassword,
+                    password: "test",
                 });
 
                 return user.save();
@@ -50,7 +49,7 @@ describe("auth controller - signin", () => {
         exception = null;
     })
 
-    it("should throw 'User not found.' 400 if user hasn't been found", (done) => {
+    it("should throw 'User not found.' if user hasn't been found", (done) => {
         const req = {
             body: {
                 email: "test2@test.com",
@@ -58,13 +57,14 @@ describe("auth controller - signin", () => {
             },
         } as unknown as Request;
 
-        signin(req, res as unknown as Response, next).then((value) => {
+        signin(req, res as unknown as Response, next).then(() => {
             expect(exception).to.have.property("message", "User not found.");
+
             done();
         });
     });
 
-    it("should throw 'Wrong password.' 401 if password is wrong", (done) => {
+    it("should throw 'Wrong password.' if password is wrong", (done) => {
         const req = {
             body: {
                 email: "test@test.com",
@@ -72,8 +72,15 @@ describe("auth controller - signin", () => {
             },
         } as unknown as Request;
 
-        signin(req, res as unknown as Response, next).then((value) => {
+        stub(bcryptjs, "compare");
+
+        (bcryptjs.compare as any).resolves(false);
+
+        signin(req, res as unknown as Response, next).then(() => {
             expect(exception).to.have.property("message", "Wrong password.");
+
+            (bcryptjs.compare as any).restore();
+
             done();
         });
     });
@@ -86,10 +93,20 @@ describe("auth controller - signin", () => {
             },
         } as unknown as Request;
 
+        stub(bcryptjs, "compare");
+        stub(jwt, "sign");
+
+        (bcryptjs.compare as any).resolves(true);
+        (jwt.sign as any).returns("xyz");
+
         signin(req, res as unknown as Response, next).then((value) => {
             expect(res).to.have.property("statusCode", 200);
             expect(res.body).to.have.property("message", "Logged in succesfully.");
-            expect(res.body).to.have.property("token");
+            expect(res.body).to.have.property("token", "xyz");
+
+            (bcryptjs.compare as any).restore();
+            (jwt.sign as any).restore();
+
             done();
         });
     });
