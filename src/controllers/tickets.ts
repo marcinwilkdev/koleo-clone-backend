@@ -108,3 +108,30 @@ export const getTickets = async (
         handleErrors(err, next);
     }
 };
+
+interface GetTicketsCountResponseBody {
+    message: string;
+    ticketsCount: number;
+}
+
+export const getTicketsCount = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const userId = req.userId!;
+    const ownerId = new Types.ObjectId(userId);
+
+    try {
+        const ticketsCount = await Ticket.find({ ownerId }).countDocuments();
+
+        const responseBody: GetTicketsCountResponseBody = {
+            message: "Tickets count fetched successfully.",
+            ticketsCount,
+        };
+
+        res.status(200).json(responseBody);
+    } catch (err) {
+        handleErrors(err, next);
+    }
+};
