@@ -5,6 +5,7 @@ import City from "./city";
 
 interface IConnection extends Document {
     departureCity: ICity;
+    through: ICity[];
     arrivalCity: ICity;
     departureDate: Date;
     arrivalDate: Date;
@@ -17,6 +18,12 @@ const connectionSchema = new Schema<IConnection>({
         type: City,
         required: true,
     },
+    through: [
+        {
+            type: City,
+            required: true,
+        },
+    ],
     arrivalCity: {
         type: City,
         required: true,
