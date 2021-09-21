@@ -6,13 +6,26 @@ import { handleErrors, validateRequest } from "../util/helpers";
 import User from "../models/user";
 import HttpException from "../util/HttpException";
 
+interface SigninRequestBody {
+    email: string;
+    password: string;
+}
+
+interface SigninResponseBody {
+    message: string;
+    token: string;
+    userData: string;
+}
+
 export const signin = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
-    const email = req.body.email;
-    const password = req.body.password;
+    const body = req.body as SigninRequestBody;
+
+    const email = body.email;
+    const password = body.password;
 
     try {
         const user = await User.findOne({ email: email });
@@ -35,15 +48,27 @@ export const signin = async (
 
         let userData = user.email;
 
-        if(user.firstName) {
+        if (user.firstName) {
             userData = user.firstName;
         }
 
-        res.status(200).json({ message: "Logged in succesfully.", token, userData });
+        const responseBody: SigninResponseBody = {
+            message: "Logged in succesfully.",
+            token,
+            userData,
+        };
+
+        res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
     }
 };
+
+interface SignupRequestBody extends SigninRequestBody {
+    confirmPassword: string;
+}
+
+interface SignupResponseBody extends SigninResponseBody {}
 
 export const signup = async (
     req: Request,
@@ -53,8 +78,10 @@ export const signup = async (
     try {
         validateRequest(req);
 
-        const email = req.body.email;
-        const hashedPassword = await bcryptjs.hash(req.body.password, 12);
+        const body = req.body as SignupRequestBody;
+
+        const email = body.email;
+        const hashedPassword = await bcryptjs.hash(body.password, 12);
 
         const user = new User({
             email,
@@ -71,25 +98,41 @@ export const signup = async (
 
         const userData = savedUser.email;
 
-        res.status(201).json({
+        const responseBody: SignupResponseBody = {
             message: "User created succesfully.",
             token,
-            userData
-        });
+            userData,
+        };
+
+        res.status(201).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
     }
 };
+
+interface SetDataRequestBody {
+    discount: string;
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+}
+
+interface SetDataResponseBody {
+    message: string;
+    userData: string;
+}
 
 export const setData = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
-    const discount = req.body.discount;
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const dateOfBirth = req.body.dateOfBirth;
+    const body = req.body as SetDataRequestBody;
+
+    const discount = body.discount;
+    const firstName = body.firstName;
+    const lastName = body.lastName;
+    const dateOfBirth = body.dateOfBirth;
 
     const userId = req.userId;
 
@@ -103,13 +146,22 @@ export const setData = async (
         user.discount = discount;
         user.firstName = firstName;
         user.lastName = lastName;
-        user.dateOfBirth = dateOfBirth;
+        user.dateOfBirth = new Date(dateOfBirth);
 
         const savedUser = await user.save();
 
-        const userData = savedUser.firstName;
+        let userData = savedUser.email;
 
-        res.status(200).json({ message: "User data set succesfully.", userData });
+        if(savedUser.firstName) {
+            userData = savedUser.firstName;
+        }
+
+        const responseBody: SetDataResponseBody = {
+            message: "User data set succesfully.",
+            userData,
+        };
+
+        res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
     }
