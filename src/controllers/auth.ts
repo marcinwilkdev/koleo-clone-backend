@@ -92,6 +92,7 @@ export const signup = async (
         const user = new User({
             email,
             password: hashedPassword,
+            tickets: []
         });
 
         const savedUser = await user.save();
