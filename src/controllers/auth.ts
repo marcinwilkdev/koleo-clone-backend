@@ -92,7 +92,6 @@ export const signup = async (
         const user = new User({
             email,
             password: hashedPassword,
-            tickets: []
         });
 
         const savedUser = await user.save();
@@ -159,7 +158,7 @@ export const setData = async (
 
         let userData = savedUser.email;
 
-        if(savedUser.firstName) {
+        if (savedUser.firstName) {
             userData = savedUser.firstName;
         }
 

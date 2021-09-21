@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { Schema, Types } from "mongoose";
 
 import Ticket, { ITicket } from "../models/ticket";
-import User from "../models/user";
 import { handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
@@ -26,7 +26,8 @@ export const createTicket = async (
     const { date, arrivalCity, departureCity, price, ticketType, trainType } =
         req.body as CreateTicketRequestBody;
 
-    const userId = req.userId;
+    const userId = req.userId!;
+    const ownerId = new Types.ObjectId(userId);
 
     const ticket = new Ticket({
         date,
@@ -35,34 +36,56 @@ export const createTicket = async (
         price,
         ticketType,
         trainType,
+        ownerId,
     });
 
     try {
         const savedTicket = await ticket.save();
 
-        console.log(savedTicket);
-
         if (!savedTicket) {
             throw new HttpException("Couldn't create ticket", 500);
         }
-
-        const ticketId = savedTicket._id;
-
-        const user = await User.findById(userId);
-
-        if (!user) {
-            throw new HttpException("User not found.", 404);
-        }
-
-        user.tickets.push(ticketId);
-
-        await user.save();
 
         const responseBody: CreateTicketResponseBody = {
             message: "Ticket created succesfully.",
         };
 
         res.status(201).json(responseBody);
+    } catch (err) {
+        handleErrors(err, next);
+    }
+};
+
+interface GetTicketsRequestBody {}
+
+interface GetTicketsResponseBody {
+    message: string;
+    tickets: ITicket[];
+}
+
+const TICKETS_PER_PAGE = 10;
+
+export const getTickets = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const pageNumber = +(req.query.page || 1);
+    const userId = req.userId!;
+    const ownerId = new Types.ObjectId(userId);
+
+    try {
+        const tickets = await Ticket.find({ ownerId })
+            .sort({ date: -1 })
+            .limit(TICKETS_PER_PAGE)
+            .skip((pageNumber - 1) * TICKETS_PER_PAGE);
+
+        const responseBody: GetTicketsResponseBody = {
+            message: "Tickets fetched successfully.",
+            tickets,
+        };
+
+        res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
     }

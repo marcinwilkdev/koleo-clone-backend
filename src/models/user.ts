@@ -7,7 +7,6 @@ export interface IUser extends Document {
     firstName?: string;
     lastName?: string;
     dateOfBirth?: Date;
-    tickets: Schema.Types.ObjectId[];
 }
 
 const userSchema = new Schema<IUser>({
@@ -23,12 +22,6 @@ const userSchema = new Schema<IUser>({
     firstName: String,
     lastName: String,
     dateOfBirth: Date,
-    tickets: [
-        {
-            type: Schema.Types.ObjectId,
-            required: true,
-        },
-    ],
 });
 
 export default model<IUser>("User", userSchema);
