@@ -4,6 +4,6 @@ import { addCity, getCities } from "../controllers/cities";
 const router = Router();
 
 router.get("/list", getCities);
-router.get("/list", addCity);
+router.put("/add", addCity);
 
 export default router;
