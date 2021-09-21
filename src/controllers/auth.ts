@@ -33,7 +33,13 @@ export const signin = async (
             { expiresIn: "1h" }
         );
 
-        res.status(200).json({ message: "Logged in succesfully.", token });
+        let userData = user.email;
+
+        if(user.firstName) {
+            userData = user.firstName;
+        }
+
+        res.status(200).json({ message: "Logged in succesfully.", token, userData });
     } catch (err) {
         handleErrors(err, next);
     }
@@ -55,7 +61,7 @@ export const signup = async (
             password: hashedPassword,
         });
 
-        await user.save();
+        const savedUser = await user.save();
 
         const token = jwt.sign(
             { userId: user._id.toString() },
@@ -63,7 +69,13 @@ export const signup = async (
             { expiresIn: "1h" }
         );
 
-        res.status(201).json({ message: "User created succesfully.", token });
+        const userData = savedUser.email;
+
+        res.status(201).json({
+            message: "User created succesfully.",
+            token,
+            userData
+        });
     } catch (err) {
         handleErrors(err, next);
     }
@@ -93,9 +105,11 @@ export const setData = async (
         user.lastName = lastName;
         user.dateOfBirth = dateOfBirth;
 
-        await user.save();
+        const savedUser = await user.save();
 
-        res.status(200).json({ message: "User data set succesfully." });
+        const userData = savedUser.firstName;
+
+        res.status(200).json({ message: "User data set succesfully.", userData });
     } catch (err) {
         handleErrors(err, next);
     }
