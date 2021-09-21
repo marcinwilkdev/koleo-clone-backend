@@ -68,3 +68,7 @@ export const signup = async (
         handleErrors(err, next);
     }
 };
+
+export const setData = async (req: Request, res: Response, next: NextFunction) => {
+    
+};

@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { signin, signup } from "../controllers/auth";
+import { setData, signin, signup } from "../controllers/auth";
 
 import { body } from "express-validator";
 
 import User from "../models/user";
+import { isAuth } from "../middlewares/is-auth";
 
 const router = Router();
 
@@ -38,6 +39,6 @@ router.put(
     signup
 );
 router.post("/signin", signin);
-router.put("/set-data");
+router.put("/set-data", isAuth, setData);
 
 export default router;
