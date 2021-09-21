@@ -3,6 +3,10 @@ import { Document, model, Schema } from "mongoose";
 interface IUser extends Document {
     email: string;
     password: string;
+    discount?: boolean;
+    firstName?: string;
+    lastName?: string;
+    dateOfBirth?: Date;
 }
 
 const userSchema = new Schema<IUser>({
@@ -14,6 +18,10 @@ const userSchema = new Schema<IUser>({
         type: String,
         required: true,
     },
+    discount: Boolean,
+    firstName: String,
+    lastName: String,
+    dateOfBirth: Date,
 });
 
 export default model<IUser>("User", userSchema);
