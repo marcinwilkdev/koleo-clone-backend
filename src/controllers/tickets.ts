@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Schema, Types } from "mongoose";
+import { Types } from "mongoose";
 
 import Ticket, { ITicket } from "../models/ticket";
 import { handleErrors } from "../util/helpers";
@@ -56,11 +56,19 @@ export const createTicket = async (
     }
 };
 
-interface GetTicketsRequestBody {}
+interface Ticket {
+    id: string;
+    date: string;
+    departureCity: string;
+    arrivalCity: string;
+    ticketType: string;
+    trainType: string;
+    price: number;
+}
 
 interface GetTicketsResponseBody {
     message: string;
-    tickets: ITicket[];
+    tickets: Ticket[];
 }
 
 const TICKETS_PER_PAGE = 10;
@@ -80,9 +88,19 @@ export const getTickets = async (
             .limit(TICKETS_PER_PAGE)
             .skip((pageNumber - 1) * TICKETS_PER_PAGE);
 
+        const mappedTickets: Ticket[] = tickets.map((ticket) => ({
+            id: ticket._id.toString(),
+            date: ticket.date.toISOString(),
+            arrivalCity: ticket.arrivalCity,
+            departureCity: ticket.departureCity,
+            price: ticket.price,
+            ticketType: ticket.ticketType,
+            trainType: ticket.trainType,
+        }));
+
         const responseBody: GetTicketsResponseBody = {
             message: "Tickets fetched successfully.",
-            tickets,
+            tickets: mappedTickets,
         };
 
         res.status(200).json(responseBody);
