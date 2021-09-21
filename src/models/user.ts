@@ -1,12 +1,13 @@
 import { Document, model, Schema } from "mongoose";
 
-interface IUser extends Document {
+export interface IUser extends Document {
     email: string;
     password: string;
     discount?: string;
     firstName?: string;
     lastName?: string;
     dateOfBirth?: Date;
+    tickets: Schema.Types.ObjectId[];
 }
 
 const userSchema = new Schema<IUser>({
@@ -22,6 +23,12 @@ const userSchema = new Schema<IUser>({
     firstName: String,
     lastName: String,
     dateOfBirth: Date,
+    tickets: [
+        {
+            type: Schema.Types.ObjectId,
+            required: true,
+        },
+    ],
 });
 
 export default model<IUser>("User", userSchema);
