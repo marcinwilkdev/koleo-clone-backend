@@ -69,6 +69,34 @@ export const signup = async (
     }
 };
 
-export const setData = async (req: Request, res: Response, next: NextFunction) => {
-    
+export const setData = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const discount = req.body.discount;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const dateOfBirth = req.body.dateOfBirth;
+
+    const userId = req.userId;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            throw new HttpException("User not found.", 404);
+        }
+
+        user.discount = discount;
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.dateOfBirth = dateOfBirth;
+
+        await user.save();
+
+        res.status(200).json({ message: "User data set succesfully." });
+    } catch (err) {
+        handleErrors(err, next);
+    }
 };
