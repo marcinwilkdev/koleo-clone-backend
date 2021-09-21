@@ -5,6 +5,7 @@ import { setCORSHeaders } from "./middlewares/headers";
 
 import authRoutes from "./routes/auth";
 import ticketsRoutes from "./routes/tickets";
+import citiesRoutes from "./routes/cities";
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 app.use("/tickets", ticketsRoutes);
+app.use("/cities", citiesRoutes);
 
 app.use(errorsHandler);
 
