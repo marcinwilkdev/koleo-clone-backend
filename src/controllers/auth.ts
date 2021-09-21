@@ -64,11 +64,17 @@ export const signin = async (
     }
 };
 
-interface SignupRequestBody extends SigninRequestBody {
+interface SignupRequestBody {
+    email: string;
+    password: string;
     confirmPassword: string;
 }
 
-interface SignupResponseBody extends SigninResponseBody {}
+interface SignupResponseBody {
+    message: string;
+    token: string;
+    userData: string;
+}
 
 export const signup = async (
     req: Request,
