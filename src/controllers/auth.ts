@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
 import { handleErrors, validateRequest } from "../util/helpers";
 import User from "../models/user";
 import HttpException from "../util/HttpException";
 import { encryptionService } from "../app";
+import { webTokenService } from "../app";
 
 interface SigninRequestBody {
     email: string;
@@ -34,17 +34,16 @@ export const signin = async (
             throw new HttpException("User not found.", 404);
         }
 
-        const isPasswordEqual = await encryptionService.compare(password, user.password);
+        const isPasswordEqual = await encryptionService.compare(
+            password,
+            user.password
+        );
 
         if (!isPasswordEqual) {
             throw new HttpException("Wrong password.", 401);
         }
 
-        const token = jwt.sign(
-            { userId: user._id.toString() },
-            process.env.JWT_SECRET || "somesupersecret",
-            { expiresIn: "1h" }
-        );
+        const token = webTokenService.sign({ userId: user._id.toString() }, 1);
 
         let userData = user.email;
 
@@ -96,11 +95,7 @@ export const signup = async (
 
         const savedUser = await user.save();
 
-        const token = jwt.sign(
-            { userId: user._id.toString() },
-            process.env.JWT_SECRET || "somesupersecret",
-            { expiresIn: "1h" }
-        );
+        const token = webTokenService.sign({ userId: user._id.toString() }, 1);
 
         const userData = savedUser.email;
 

@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { webTokenService } from "../app";
 import HttpException from "../util/HttpException";
 
-import jwt, { JwtPayload } from "jsonwebtoken";
-
-interface AuthJwtPayload extends JwtPayload {
+interface AuthPayload {
     userId: string;
 }
 
@@ -27,24 +26,22 @@ const getTokenFromHeader = (authHeader: string) => {
     return token;
 }
 
-const getJwtPayloadFromToken = (token: string, secret: string) => {
-    const jwtPayload = jwt.verify(token, process.env.JWT_SECRET || "somesupersecret");
+const getPayloadFromToken = (token: string) => {
+    const payload = webTokenService.verify(token);
 
-    if(!jwtPayload) {
+    if(!payload) {
         throw new HttpException("Authorization failed.", 401);
     }
 
-    return jwtPayload as JwtPayload;
+    return payload;
 };
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-    const jwtSecret = process.env.JWT_SECRET || "somesupersecret";
-
     const authHeader = getAuthHeader(req);
     const token = getTokenFromHeader(authHeader);
-    const jwtPayload = getJwtPayloadFromToken(token, jwtSecret) as AuthJwtPayload;
+    const payload = getPayloadFromToken(token) as AuthPayload;
 
-    req.userId = jwtPayload.userId;
+    req.userId = payload.userId;
 
     next();
 };
