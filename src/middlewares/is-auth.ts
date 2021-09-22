@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { WebTokenService } from "../services/WebTokenService";
+import { WebTokenService } from "../services/other/WebTokenService";
 
 import HttpException from "../util/HttpException";
 

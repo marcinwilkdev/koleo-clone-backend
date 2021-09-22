@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Request, Response } from "express";
 import { isAuth } from "../../src/middlewares/is-auth";
-import { WebTokenService } from "../../src/services/WebTokenService";
+import { WebTokenService } from "../../src/services/other/WebTokenService";
 
 describe("isAuth middleware", () => {
     const res = {} as unknown as Response;

@@ -1,4 +1,4 @@
-import CityService from "../../database/CityService";
+import CityService from "../CityService";
 
 import City, { ICity, ICityDocument, ISavedCity } from "../../../models/city";
 

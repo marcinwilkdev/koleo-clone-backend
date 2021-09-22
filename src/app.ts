@@ -8,17 +8,17 @@ import authRoutes from "./routes/auth";
 import ticketsRoutes from "./routes/tickets";
 import citiesRoutes from "./routes/cities";
 
-import EncryptionService from "./services/EncryptionService";
-import { WebTokenService } from "./services/WebTokenService";
+import EncryptionService from "./services/other/EncryptionService";
+import { WebTokenService } from "./services/other/WebTokenService";
 
-import BcryptjsEncryptionService from "./services/implementations/BcryptjsEncryptionService";
-import JsonWebTokenService from "./services/implementations/JsonWebTokenService";
+import BcryptjsEncryptionService from "./services/other/implementations/BcryptjsEncryptionService";
+import JsonWebTokenService from "./services/other/implementations/JsonWebTokenService";
 import CityService from "./services/database/CityService";
-import MongooseCityService from "./services/implementations/database/MongooseCityService";
+import MongooseCityService from "./services/database/implementations/MongooseCityService";
 import TicketService from "./services/database/TicketService";
-import MongooseTicketService from "./services/implementations/database/MongooseTicketService";
+import MongooseTicketService from "./services/database/implementations/MongooseTicketService";
 import UserService from "./services/database/UserService";
-import MongooseUserService from "./services/implementations/database/MongooseUserService";
+import MongooseUserService from "./services/database/implementations/MongooseUserService";
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();

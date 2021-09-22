@@ -15,7 +15,7 @@ import {
     SignupRequestBody,
     SignupResponseBody,
 } from "./types/auth";
-import { WebTokenService } from "../services/WebTokenService";
+import { WebTokenService } from "../services/other/WebTokenService";
 
 export const signin = async (
     req: Request,
