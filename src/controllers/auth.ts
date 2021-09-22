@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { encryptionService, userService, webTokenService } from "../app";
+import { encryptionService, userService } from "../app";
 
 import { handleErrors, validateRequest } from "../util/helpers";
 import HttpException from "../util/HttpException";
@@ -15,6 +15,7 @@ import {
     SignupRequestBody,
     SignupResponseBody,
 } from "./types/auth";
+import { WebTokenService } from "../services/WebTokenService";
 
 export const signin = async (
     req: Request,
@@ -42,7 +43,7 @@ export const signin = async (
             throw new HttpException("Wrong password.", 401);
         }
 
-        const token = webTokenService.sign({ userId: user.id }, 1);
+        const token = WebTokenService.getInstance().sign({ userId: user.id }, 1);
 
         let userData = user.email;
 
@@ -82,7 +83,7 @@ export const signup = async (
 
         const savedUser = await userService.save(user);
 
-        const token = webTokenService.sign({ userId: savedUser.id }, 1);
+        const token = WebTokenService.getInstance().sign({ userId: savedUser.id }, 1);
 
         const userData = savedUser.email;
 

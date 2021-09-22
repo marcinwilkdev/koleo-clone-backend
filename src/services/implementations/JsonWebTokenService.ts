@@ -1,8 +1,8 @@
-import WebTokenService from "../WebTokenService";
+import IWebTokenService from "../WebTokenService";
 
 import jwt from "jsonwebtoken";
 
-export default class JsonWebTokenService implements WebTokenService {
+export default class JsonWebTokenService implements IWebTokenService {
     secret: string;
 
     constructor(secret: string) {

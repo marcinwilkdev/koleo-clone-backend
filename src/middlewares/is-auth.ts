@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-
-import { webTokenService } from "../app";
+import { WebTokenService } from "../services/WebTokenService";
 
 import HttpException from "../util/HttpException";
 
@@ -29,7 +28,7 @@ const getTokenFromHeader = (authHeader: string) => {
 }
 
 const getPayloadFromToken = (token: string) => {
-    const payload = webTokenService.verify(token);
+    const payload = WebTokenService.getInstance().verify(token);
 
     if(!payload) {
         throw new HttpException("Authorization failed.", 401);

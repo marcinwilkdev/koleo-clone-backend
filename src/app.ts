@@ -9,7 +9,7 @@ import ticketsRoutes from "./routes/tickets";
 import citiesRoutes from "./routes/cities";
 
 import EncryptionService from "./services/EncryptionService";
-import WebTokenService from "./services/WebTokenService";
+import { WebTokenService } from "./services/WebTokenService";
 
 import BcryptjsEncryptionService from "./services/implementations/BcryptjsEncryptionService";
 import JsonWebTokenService from "./services/implementations/JsonWebTokenService";
@@ -26,8 +26,9 @@ if (process.env.NODE_ENV !== "production") {
 
 export const encryptionService: EncryptionService =
     new BcryptjsEncryptionService();
-export const webTokenService: WebTokenService = new JsonWebTokenService(
-    process.env.JWT_SECRET || "somesupersecret"
+
+WebTokenService.init(
+    new JsonWebTokenService(process.env.JWT_SECRET || "somesupersecret")
 );
 
 export const cityService: CityService = new MongooseCityService();
