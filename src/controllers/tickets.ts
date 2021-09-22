@@ -37,11 +37,7 @@ export const createTicket = async (
             ownerId,
         };
 
-        const savedTicket = await TicketService.getInstance().save(ticket);
-
-        if (!savedTicket) {
-            throw new HttpException("Couldn't create ticket", 500);
-        }
+        await TicketService.getInstance().save(ticket);
 
         const responseBody: CreateTicketResponseBody = {
             message: "Ticket created succesfully.",
