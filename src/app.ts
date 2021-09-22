@@ -15,6 +15,8 @@ import BcryptjsEncryptionService from "./services/implementations/BcryptjsEncryp
 import JsonWebTokenService from "./services/implementations/JsonWebTokenService";
 import CityService from "./services/database/CityService";
 import MongooseCityService from "./services/implementations/database/MongooseCityService";
+import TicketService from "./services/database/TicketService";
+import MongooseTicketService from "./services/implementations/database/MongooseTicketService";
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
@@ -27,6 +29,7 @@ export const webTokenService: WebTokenService = new JsonWebTokenService(
 );
 
 export const cityService: CityService = new MongooseCityService();
+export const ticketService: TicketService = new MongooseTicketService();
 
 const app = express();
 

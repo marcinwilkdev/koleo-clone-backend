@@ -1,13 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
+import { ticketService } from "../app";
+import { ISavedTicket, ITicket } from "../models/ticket";
 
 import { handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
-import Ticket from "../models/ticket";
+const TICKETS_PER_PAGE = 10;
 
 interface CreateTicketRequestBody {
-    date: string;
+    date: Date;
     departureCity: string;
     arrivalCity: string;
     ticketType: string;
@@ -27,21 +29,20 @@ export const createTicket = async (
     const { date, arrivalCity, departureCity, price, ticketType, trainType } =
         req.body as CreateTicketRequestBody;
 
-    const userId = req.userId!;
-    const ownerId = new Types.ObjectId(userId);
-
-    const ticket = new Ticket({
-        date,
-        arrivalCity,
-        departureCity,
-        price,
-        ticketType,
-        trainType,
-        ownerId,
-    });
+    const ownerId = req.userId!;
 
     try {
-        const savedTicket = await ticket.save();
+        const ticket: ITicket = {
+            date,
+            arrivalCity,
+            departureCity,
+            price,
+            ticketType,
+            trainType,
+            ownerId,
+        };
+
+        const savedTicket = await ticketService.save(ticket);
 
         if (!savedTicket) {
             throw new HttpException("Couldn't create ticket", 500);
@@ -57,22 +58,10 @@ export const createTicket = async (
     }
 };
 
-interface Ticket {
-    id: string;
-    date: string;
-    departureCity: string;
-    arrivalCity: string;
-    ticketType: string;
-    trainType: string;
-    price: number;
-}
-
 interface GetTicketsResponseBody {
     message: string;
-    tickets: Ticket[];
+    tickets: ISavedTicket[];
 }
-
-const TICKETS_PER_PAGE = 10;
 
 export const getTickets = async (
     req: Request,
@@ -80,28 +69,18 @@ export const getTickets = async (
     next: NextFunction
 ) => {
     const pageNumber = +(req.query.page || 1);
-    const userId = req.userId!;
-    const ownerId = new Types.ObjectId(userId);
+    const ownerId = req.userId!;
 
     try {
-        const tickets = await Ticket.find({ ownerId })
-            .sort({ date: -1 })
-            .limit(TICKETS_PER_PAGE)
-            .skip((pageNumber - 1) * TICKETS_PER_PAGE);
-
-        const mappedTickets: Ticket[] = tickets.map((ticket) => ({
-            id: ticket._id.toString(),
-            date: ticket.date.toISOString(),
-            arrivalCity: ticket.arrivalCity,
-            departureCity: ticket.departureCity,
-            price: ticket.price,
-            ticketType: ticket.ticketType,
-            trainType: ticket.trainType,
-        }));
+        const tickets = await ticketService.findAllByOwnerIdPaged(
+            ownerId,
+            TICKETS_PER_PAGE,
+            pageNumber
+        );
 
         const responseBody: GetTicketsResponseBody = {
             message: "Tickets fetched successfully.",
-            tickets: mappedTickets,
+            tickets,
         };
 
         res.status(200).json(responseBody);
@@ -120,11 +99,10 @@ export const getTicketsCount = async (
     res: Response,
     next: NextFunction
 ) => {
-    const userId = req.userId!;
-    const ownerId = new Types.ObjectId(userId);
+    const ownerId = req.userId!;
 
     try {
-        const ticketsCount = await Ticket.find({ ownerId }).countDocuments();
+        const ticketsCount = await ticketService.countAllByOwnerId(ownerId);
 
         const responseBody: GetTicketsCountResponseBody = {
             message: "Tickets count fetched successfully.",

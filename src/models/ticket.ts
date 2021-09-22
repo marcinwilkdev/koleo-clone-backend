@@ -1,16 +1,22 @@
-import { Document, model, Schema, Types } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
-export interface ITicket extends Document {
+export interface ITicket {
     date: Date;
     departureCity: string;
     arrivalCity: string;
     ticketType: string;
     trainType: string;
     price: number;
-    ownerId: Types.ObjectId;
+    ownerId: string;
 }
 
-const ticketSchema = new Schema<ITicket>({
+export interface ISavedTicket extends ITicket {
+    id: string;
+}
+
+export interface ITicketDocument extends Document, ITicket {}
+
+const ticketSchema = new Schema<ITicketDocument>({
     date: {
         type: Date,
         required: true,
@@ -36,10 +42,10 @@ const ticketSchema = new Schema<ITicket>({
         required: true,
     },
     ownerId: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
-        ref: "User",
+        ref: "User", // ???
     },
 });
 
-export default model<ITicket>("Ticket", ticketSchema);
+export default model<ITicketDocument>("Ticket", ticketSchema);

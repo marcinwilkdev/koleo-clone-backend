@@ -1,16 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { cityService } from "../app";
-import { ICity } from "../models/city";
+import { ICity, ISavedCity } from "../models/city";
 
 import { handleErrors } from "../util/helpers";
 
-interface City {
-    id: string;
-    name: string;
-}
 interface GetCitiesResponseBody {
     message: string;
-    cities: City[];
+    cities: ISavedCity[];
 }
 
 export const getCities = async (
@@ -32,10 +28,6 @@ export const getCities = async (
     }
 };
 
-interface AddCityRequestBody {
-    name: string;
-}
-
 interface AddCityResponseBody {
     message: string;
 }
@@ -45,7 +37,7 @@ export const addCity = async (
     res: Response,
     next: NextFunction
 ) => {
-    const body = req.body as AddCityRequestBody;
+    const body = req.body as ICity;
 
     const name = body.name;
 
