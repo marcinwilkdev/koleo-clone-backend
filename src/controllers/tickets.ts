@@ -1,24 +1,20 @@
 import { NextFunction, Request, Response } from "express";
+
 import { ticketService } from "../app";
-import { ISavedTicket, ITicket } from "../models/ticket";
 
 import { handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
+import { ITicket } from "../models/ticket";
+
+import {
+    CreateTicketRequestBody,
+    CreateTicketResponseBody,
+    GetTicketsCountResponseBody,
+    GetTicketsResponseBody,
+} from "./types/ticket";
+
 const TICKETS_PER_PAGE = 10;
-
-interface CreateTicketRequestBody {
-    date: Date;
-    departureCity: string;
-    arrivalCity: string;
-    ticketType: string;
-    trainType: string;
-    price: number;
-}
-
-interface CreateTicketResponseBody {
-    message: string;
-}
 
 export const createTicket = async (
     req: Request,
@@ -57,11 +53,6 @@ export const createTicket = async (
     }
 };
 
-interface GetTicketsResponseBody {
-    message: string;
-    tickets: ISavedTicket[];
-}
-
 export const getTickets = async (
     req: Request,
     res: Response,
@@ -87,11 +78,6 @@ export const getTickets = async (
         handleErrors(err, next);
     }
 };
-
-interface GetTicketsCountResponseBody {
-    message: string;
-    ticketsCount: number;
-}
 
 export const getTicketsCount = async (
     req: Request,

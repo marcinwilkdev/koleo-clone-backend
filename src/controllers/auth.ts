@@ -1,22 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 
+import { encryptionService, userService, webTokenService } from "../app";
+
 import { handleErrors, validateRequest } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
-import { encryptionService, userService } from "../app";
-import { webTokenService } from "../app";
 import { IUser } from "../models/user";
 
-interface SigninRequestBody {
-    email: string;
-    password: string;
-}
-
-interface SigninResponseBody {
-    message: string;
-    token: string;
-    userData: string;
-}
+import {
+    SetDataRequestBody,
+    SetDataResponseBody,
+    SigninRequestBody,
+    SigninResponseBody,
+    SignupRequestBody,
+    SignupResponseBody,
+} from "./types/auth";
 
 export const signin = async (
     req: Request,
@@ -64,18 +62,6 @@ export const signin = async (
     }
 };
 
-interface SignupRequestBody {
-    email: string;
-    password: string;
-    confirmPassword: string;
-}
-
-interface SignupResponseBody {
-    message: string;
-    token: string;
-    userData: string;
-}
-
 export const signup = async (
     req: Request,
     res: Response,
@@ -111,18 +97,6 @@ export const signup = async (
         handleErrors(err, next);
     }
 };
-
-interface SetDataRequestBody {
-    discount: string;
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-}
-
-interface SetDataResponseBody {
-    message: string;
-    userData: string;
-}
 
 export const setData = async (
     req: Request,

@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express";
+
 import { cityService } from "../app";
-import { ICity, ISavedCity } from "../models/city";
 
 import { handleErrors } from "../util/helpers";
 
-interface GetCitiesResponseBody {
-    message: string;
-    cities: ISavedCity[];
-}
+import { ICity } from "../models/city";
+
+import { AddCityResponseBody, GetCitiesResponseBody } from "./types/cities";
 
 export const getCities = async (
     req: Request,
@@ -27,10 +26,6 @@ export const getCities = async (
         handleErrors(err, next);
     }
 };
-
-interface AddCityResponseBody {
-    message: string;
-}
 
 export const addCity = async (
     req: Request,
