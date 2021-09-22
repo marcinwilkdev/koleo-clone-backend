@@ -20,6 +20,8 @@ import TicketService from "./services/database/TicketService";
 import MongooseTicketService from "./services/database/implementations/MongooseTicketService";
 import UserService from "./services/database/UserService";
 import MongooseUserService from "./services/database/implementations/MongooseUserService";
+import ConnectionService from "./services/database/ConnectionService";
+import MongooseConnectionService from "./services/database/implementations/MongooseConnectionService";
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
@@ -33,6 +35,7 @@ WebTokenService.init(new JsonWebTokenService(jwtSecret));
 CityService.init(new MongooseCityService());
 TicketService.init(new MongooseTicketService());
 UserService.init(new MongooseUserService());
+ConnectionService.init(new MongooseConnectionService());
 
 const app = express();
 
