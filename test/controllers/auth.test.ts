@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { expect } from "chai";
 
-import { signin, signup } from "../../src/controllers/auth";
+import { setData, signin, signup } from "../../src/controllers/auth";
 
 import UserService from "../../src/services/database/UserService";
 import EncryptionService from "../../src/services/other/EncryptionService";
@@ -25,11 +25,16 @@ const req = {
     body: {
         email: "",
         password: "",
+        discount: "",
+        firstName: "",
+        lastName: "",
+        dateOfBirth: new Date(),
     },
+    userId: ""
 } as unknown as Request;
 
 describe("auth controller - signin", () => {
-    const res = {
+    const response = {
         statusCode: 500,
         body: {} as any,
         status: function (code: number) {
@@ -41,6 +46,8 @@ describe("auth controller - signin", () => {
             return this;
         },
     };
+
+    const res = response as unknown as Response & { body: any };
 
     let exception: null | HttpException;
 
@@ -63,8 +70,8 @@ describe("auth controller - signin", () => {
         WebTokenService.init({
             secret: "",
             sign: () => "xyz",
-            verify: () => {}
-        })
+            verify: () => {},
+        });
     });
 
     beforeEach(() => {
@@ -72,7 +79,7 @@ describe("auth controller - signin", () => {
     });
 
     it("should throw 'User not found.' if user hasn't been found", (done) => {
-        signin(req, res as unknown as Response, next).then(() => {
+        signin(req, res, next).then(() => {
             expect(exception).to.have.property("message", "User not found.");
 
             done();
@@ -82,7 +89,7 @@ describe("auth controller - signin", () => {
     it("should throw 'Wrong password.' if password is wrong", (done) => {
         UserService.getInstance().findByEmail = async () => savedUser;
 
-        signin(req, res as unknown as Response, next).then(() => {
+        signin(req, res, next).then(() => {
             expect(exception).to.have.property("message", "Wrong password.");
 
             done();
@@ -92,7 +99,7 @@ describe("auth controller - signin", () => {
     it("should set response token if authentication completed succesfully", (done) => {
         EncryptionService.getInstance().compare = async () => true;
 
-        signin(req, res as unknown as Response, next).then(() => {
+        signin(req, res, next).then(() => {
             expect(res).to.have.property("statusCode", 200);
             expect(res.body).to.have.property(
                 "message",
@@ -106,7 +113,7 @@ describe("auth controller - signin", () => {
 });
 
 describe("auth controller - signup", () => {
-    const res = {
+    const response = {
         statusCode: 500,
         body: {} as any,
         status: function (code: number) {
@@ -118,6 +125,8 @@ describe("auth controller - signup", () => {
             return this;
         },
     };
+
+    const res = response as unknown as Response & { body: any };
 
     before(() => {
         UserService.init({
@@ -134,16 +143,69 @@ describe("auth controller - signup", () => {
         WebTokenService.init({
             secret: "",
             sign: () => "xyz",
-            verify: () => {}
-        })
-    })
+            verify: () => {},
+        });
+    });
 
     it("should send correct response if user has been created", (done) => {
-        signup(req, res as unknown as Response, () => {}).then(() => {
+        signup(req, res, () => {}).then(() => {
             expect(res).to.have.property("statusCode", 201);
             expect(res.body).to.have.property(
                 "message",
                 "User created succesfully."
+            );
+
+            done();
+        });
+    });
+});
+
+describe("auth controller - setData", () => {
+    const response = {
+        statusCode: 500,
+        body: {} as any,
+        status: function (code: number) {
+            this.statusCode = code;
+            return this;
+        },
+        json: function (payload: any) {
+            this.body = payload;
+            return this;
+        },
+    };
+
+    const res = response as unknown as Response & { body: any };
+
+    let exception: null | HttpException;
+
+    const next = ((exc: HttpException) => {
+        exception = exc;
+    }) as unknown as NextFunction;
+
+    before(() => {
+        UserService.init({
+            save: async () => savedUser,
+            findByEmail: async () => null,
+            findById: async () => null,
+        });
+    });
+
+    it("should throw 'User not found.' if user hasn't been found", (done) => {
+        setData(req, res, next).then(() => {
+            expect(exception).to.have.property("message", "User not found.");
+
+            done();
+        });
+    });
+
+    it("should send correct response if user data has been set", (done) => {
+        UserService.getInstance().findById = async () => savedUser;
+
+        setData(req, res, () => {}).then(() => {
+            expect(res).to.have.property("statusCode", 200);
+            expect(res.body).to.have.property(
+                "message",
+                "User data set succesfully."
             );
 
             done();
