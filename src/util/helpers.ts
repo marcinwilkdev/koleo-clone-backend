@@ -1,5 +1,6 @@
 import { NextFunction, Request } from "express";
 import { validationResult } from "express-validator";
+
 import HttpException from "./HttpException";
 
 export const handleErrors = (err: any, next: NextFunction) => {

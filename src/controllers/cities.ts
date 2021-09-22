@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { cityService } from "../app";
+import { ICity } from "../models/city";
 
-import City from "../models/city";
 import { handleErrors } from "../util/helpers";
 
 interface City {
@@ -18,16 +19,11 @@ export const getCities = async (
     next: NextFunction
 ) => {
     try {
-        const cities = await City.find();
-
-        const mappedCities: City[] = cities.map((city) => ({
-            id: city._id.toString(),
-            name: city.name,
-        }));
+        const cities = await cityService.findAll();
 
         const responseBody: GetCitiesResponseBody = {
             message: "Cities fetched succesfully.",
-            cities: mappedCities,
+            cities,
         };
 
         res.status(200).json(responseBody);
@@ -53,12 +49,12 @@ export const addCity = async (
 
     const name = body.name;
 
-    const city = new City({
-        name,
-    });
-
     try {
-        await city.save();
+        const city: ICity = {
+            name,
+        };
+
+        await cityService.save(city);
 
         const responseBody: AddCityResponseBody = {
             message: "City added succesfully.",

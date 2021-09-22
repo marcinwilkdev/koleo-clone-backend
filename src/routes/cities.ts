@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import { addCity, getCities } from "../controllers/cities";
 
 const router = Router();

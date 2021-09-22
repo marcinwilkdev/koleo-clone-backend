@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { webTokenService } from "../app";
+
 import HttpException from "../util/HttpException";
+
+import { webTokenService } from "../app";
 
 interface AuthPayload {
     userId: string;

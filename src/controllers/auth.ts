@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
 import { handleErrors, validateRequest } from "../util/helpers";
-import User from "../models/user";
 import HttpException from "../util/HttpException";
+
 import { encryptionService } from "../app";
 import { webTokenService } from "../app";
+
+import User from "../models/user";
 
 interface SigninRequestBody {
     email: string;

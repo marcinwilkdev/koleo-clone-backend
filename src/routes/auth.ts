@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { setData, signin, signup } from "../controllers/auth";
-
 import { body } from "express-validator";
 
-import User from "../models/user";
+import { setData, signin, signup } from "../controllers/auth";
+
 import { isAuth } from "../middlewares/is-auth";
+
+import User from "../models/user";
 
 const router = Router();
 

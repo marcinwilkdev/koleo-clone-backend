@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
 
-import Ticket from "../models/ticket";
 import { handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
+
+import Ticket from "../models/ticket";
 
 interface CreateTicketRequestBody {
     date: string;

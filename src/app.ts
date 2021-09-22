@@ -1,15 +1,20 @@
 import express from "express";
 import mongoose from "mongoose";
+
 import { errorsHandler } from "./middlewares/errors";
 import { setCORSHeaders } from "./middlewares/headers";
 
 import authRoutes from "./routes/auth";
 import ticketsRoutes from "./routes/tickets";
 import citiesRoutes from "./routes/cities";
+
 import EncryptionService from "./services/EncryptionService";
-import BcryptjsEncryptionService from "./services/implementations/BcryptjsEncryptionService";
 import WebTokenService from "./services/WebTokenService";
+
+import BcryptjsEncryptionService from "./services/implementations/BcryptjsEncryptionService";
 import JsonWebTokenService from "./services/implementations/JsonWebTokenService";
+import CityService from "./services/database/CityService";
+import MongooseCityService from "./services/implementations/database/MongooseCityService";
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
@@ -20,6 +25,8 @@ export const encryptionService: EncryptionService =
 export const webTokenService: WebTokenService = new JsonWebTokenService(
     process.env.JWT_SECRET || "somesupersecret"
 );
+
+export const cityService: CityService = new MongooseCityService();
 
 const app = express();
 
