@@ -2,47 +2,33 @@ import { Document, model, Schema } from "mongoose";
 
 import City, { ICity } from "./city";
 
-interface IConnection extends Document {
-    departureCity: ICity;
-    through: ICity[];
-    arrivalCity: ICity;
-    departureDate: Date;
-    arrivalDate: Date;
+interface IConnection {
+    cities: {
+        city: ICity;
+        date: Date;
+    }[];
     trainType: string;
-    price: number;
 }
 
-const connectionSchema = new Schema<IConnection>({
-    departureCity: {
-        type: City,
-        required: true,
-    },
-    through: [
+interface IConnectionDocument extends Document, IConnection {}
+
+const connectionSchema = new Schema<IConnectionDocument>({
+    cities: [
         {
-            type: City,
-            required: true,
+            city: {
+                type: City,
+                required: true,
+            },
+            date: {
+                type: Date,
+                required: true,
+            },
         },
     ],
-    arrivalCity: {
-        type: City,
-        required: true,
-    },
-    departureDate: {
-        type: Date,
-        required: true,
-    },
-    arrivalDate: {
-        type: Date,
-        required: true,
-    },
     trainType: {
         type: String,
         required: true,
     },
-    price: {
-        type: Number,
-        required: true,
-    },
 });
 
-export default model<IConnection>("Connection", connectionSchema);
+export default model<IConnectionDocument>("Connection", connectionSchema);
