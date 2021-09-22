@@ -1,8 +1,8 @@
 import { Router } from "express";
 
-import { isAuth } from "../middlewares/is-auth";
-
 import { createTicket, getTickets, getTicketsCount } from "../controllers/tickets";
+
+import { isAuth } from "../middlewares/is-auth";
 
 const router = Router();
 

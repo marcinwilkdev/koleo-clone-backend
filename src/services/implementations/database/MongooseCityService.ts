@@ -1,7 +1,6 @@
 import CityService from "../../database/CityService";
 
 import City, { ICity, ICityDocument, ISavedCity } from "../../../models/city";
-import city from "../../../models/city";
 
 export default class MongooseCityService implements CityService {
     async findAll() {

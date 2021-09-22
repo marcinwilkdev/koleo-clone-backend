@@ -1,7 +1,6 @@
 import { Document, model, Schema } from "mongoose";
-import { ICity } from "./city";
 
-import City from "./city";
+import City, { ICity } from "./city";
 
 interface IConnection extends Document {
     departureCity: ICity;

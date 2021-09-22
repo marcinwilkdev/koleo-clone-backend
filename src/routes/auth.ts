@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
+
 import { userService } from "../app";
 
 import { setData, signin, signup } from "../controllers/auth";

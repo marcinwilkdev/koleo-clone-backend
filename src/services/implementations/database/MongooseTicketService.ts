@@ -1,8 +1,6 @@
-import { ISavedTicket, ITicket, ITicketDocument } from "../../../models/ticket";
-
 import TicketService from "../../database/TicketService";
 
-import Ticket from "../../../models/ticket";
+import Ticket, { ISavedTicket, ITicket, ITicketDocument } from "../../../models/ticket";
 
 export default class MongooseTicketService implements TicketService {
     async save(ticket: ITicket) {

@@ -1,7 +1,6 @@
-import { ISavedUser, IUser, IUserDocument } from "../../../models/user";
 import UserService from "../../database/UserService";
 
-import User from "../../../models/user";
+import User, { ISavedUser, IUser, IUserDocument } from "../../../models/user";
 
 export default class MongooseUserService implements UserService {
     async findById(id: string) {
