@@ -6,6 +6,10 @@ import { setCORSHeaders } from "./middlewares/headers";
 import authRoutes from "./routes/auth";
 import ticketsRoutes from "./routes/tickets";
 import citiesRoutes from "./routes/cities";
+import EncryptionService from "./services/EncryptionService";
+import BcryptjsEncryptionService from "./services/implementations/BcryptjsEncryptionService";
+
+export const encryptionService: EncryptionService = new BcryptjsEncryptionService();
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();

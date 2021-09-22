@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { handleErrors, validateRequest } from "../util/helpers";
 import User from "../models/user";
 import HttpException from "../util/HttpException";
+import { encryptionService } from "../app";
 
 interface SigninRequestBody {
     email: string;
@@ -34,7 +34,7 @@ export const signin = async (
             throw new HttpException("User not found.", 404);
         }
 
-        const isPasswordEqual = await bcryptjs.compare(password, user.password);
+        const isPasswordEqual = await encryptionService.compare(password, user.password);
 
         if (!isPasswordEqual) {
             throw new HttpException("Wrong password.", 401);
@@ -87,7 +87,7 @@ export const signup = async (
         const body = req.body as SignupRequestBody;
 
         const email = body.email;
-        const hashedPassword = await bcryptjs.hash(body.password, 12);
+        const hashedPassword = await encryptionService.hash(body.password, 12);
 
         const user = new User({
             email,
