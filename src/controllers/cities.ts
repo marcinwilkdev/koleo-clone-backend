@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { cityService } from "../app";
+import CityService from "../services/database/CityService";
 
 import { handleErrors } from "../util/helpers";
 
@@ -14,7 +14,7 @@ export const getCities = async (
     next: NextFunction
 ) => {
     try {
-        const cities = await cityService.findAll();
+        const cities = await CityService.getInstance().findAll();
 
         const responseBody: GetCitiesResponseBody = {
             message: "Cities fetched succesfully.",
@@ -41,7 +41,7 @@ export const addCity = async (
             name,
         };
 
-        await cityService.save(city);
+        await CityService.getInstance().save(city);
 
         const responseBody: AddCityResponseBody = {
             message: "City added succesfully.",

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ticketService } from "../app";
+import TicketService from "../services/database/TicketService";
 
 import { handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
@@ -37,7 +37,7 @@ export const createTicket = async (
             ownerId,
         };
 
-        const savedTicket = await ticketService.save(ticket);
+        const savedTicket = await TicketService.getInstance().save(ticket);
 
         if (!savedTicket) {
             throw new HttpException("Couldn't create ticket", 500);
@@ -62,7 +62,7 @@ export const getTickets = async (
     const ownerId = req.userId!;
 
     try {
-        const tickets = await ticketService.findAllByOwnerIdPaged(
+        const tickets = await TicketService.getInstance().findAllByOwnerIdPaged(
             ownerId,
             TICKETS_PER_PAGE,
             pageNumber
@@ -87,7 +87,7 @@ export const getTicketsCount = async (
     const ownerId = req.userId!;
 
     try {
-        const ticketsCount = await ticketService.countAllByOwnerId(ownerId);
+        const ticketsCount = await TicketService.getInstance().countAllByOwnerId(ownerId);
 
         const responseBody: GetTicketsCountResponseBody = {
             message: "Tickets count fetched successfully.",

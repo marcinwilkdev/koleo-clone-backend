@@ -1,8 +1,8 @@
-import CityService from "../CityService";
+import { ICityService } from "../CityService";
 
 import City, { ICity, ICityDocument, ISavedCity } from "../../../models/city";
 
-export default class MongooseCityService implements CityService {
+export default class MongooseCityService implements ICityService {
     async findAll() {
         const foundCities = await City.find();
 

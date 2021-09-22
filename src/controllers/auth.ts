@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
-import { userService } from "../app";
+import WebTokenService from "../services/other/WebTokenService";
+import EncryptionService from "../services/other/EncryptionService";
+import UserService from "../services/database/UserService";
 
 import { handleErrors, validateRequest } from "../util/helpers";
 import HttpException from "../util/HttpException";
@@ -15,8 +17,6 @@ import {
     SignupRequestBody,
     SignupResponseBody,
 } from "./types/auth";
-import WebTokenService from "../services/other/WebTokenService";
-import EncryptionService from "../services/other/EncryptionService";
 
 export const signin = async (
     req: Request,
@@ -29,7 +29,7 @@ export const signin = async (
     const password = body.password;
 
     try {
-        const user = await userService.findByEmail(email);
+        const user = await UserService.getInstance().findByEmail(email);
 
         if (!user) {
             throw new HttpException("User not found.", 404);
@@ -82,7 +82,7 @@ export const signup = async (
             password: hashedPassword,
         };
 
-        const savedUser = await userService.save(user);
+        const savedUser = await UserService.getInstance().save(user);
 
         const token = WebTokenService.getInstance().sign({ userId: savedUser.id }, 1);
 
@@ -115,7 +115,7 @@ export const setData = async (
     const userId = req.userId!;
 
     try {
-        const user = await userService.findById(userId);
+        const user = await UserService.getInstance().findById(userId);
 
         if (!user) {
             throw new HttpException("User not found.", 404);
@@ -126,7 +126,7 @@ export const setData = async (
         user.lastName = lastName;
         user.dateOfBirth = new Date(dateOfBirth);
 
-        const savedUser = await userService.save(user);
+        const savedUser = await UserService.getInstance().save(user);
 
         let userData = savedUser.email;
 

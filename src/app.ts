@@ -13,6 +13,7 @@ import WebTokenService from "./services/other/WebTokenService";
 
 import BcryptjsEncryptionService from "./services/other/implementations/BcryptjsEncryptionService";
 import JsonWebTokenService from "./services/other/implementations/JsonWebTokenService";
+
 import CityService from "./services/database/CityService";
 import MongooseCityService from "./services/database/implementations/MongooseCityService";
 import TicketService from "./services/database/TicketService";
@@ -29,9 +30,9 @@ WebTokenService.init(
     new JsonWebTokenService(process.env.JWT_SECRET || "somesupersecret")
 );
 
-export const cityService: CityService = new MongooseCityService();
-export const ticketService: TicketService = new MongooseTicketService();
-export const userService: UserService = new MongooseUserService();
+CityService.init(new MongooseCityService());
+TicketService.init(new MongooseTicketService());
+UserService.init(new MongooseUserService());
 
 const app = express();
 

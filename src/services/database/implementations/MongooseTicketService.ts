@@ -1,8 +1,12 @@
-import TicketService from "../../database/TicketService";
+import { ITicketService } from "../../database/TicketService";
 
-import Ticket, { ISavedTicket, ITicket, ITicketDocument } from "../../../models/ticket";
+import Ticket, {
+    ISavedTicket,
+    ITicket,
+    ITicketDocument,
+} from "../../../models/ticket";
 
-export default class MongooseTicketService implements TicketService {
+export default class MongooseTicketService implements ITicketService {
     async save(ticket: ITicket) {
         const mongooseTicket = new Ticket({ ...ticket });
 

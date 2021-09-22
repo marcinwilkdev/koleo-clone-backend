@@ -1,8 +1,8 @@
-import UserService from "../../database/UserService";
+import { IUserService } from "../../database/UserService";
 
 import User, { ISavedUser, IUser, IUserDocument } from "../../../models/user";
 
-export default class MongooseUserService implements UserService {
+export default class MongooseUserService implements IUserService {
     async findById(id: string) {
         const foundUser = await User.findById(id);
 
