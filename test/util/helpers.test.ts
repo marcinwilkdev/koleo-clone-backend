@@ -1,5 +1,7 @@
-import { expect } from "chai";
 import { NextFunction } from "express";
+
+import { expect } from "chai";
+
 import { handleErrors } from "../../src/util/helpers";
 import HttpException from "../../src/util/HttpException";
 

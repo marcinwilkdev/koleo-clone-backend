@@ -1,18 +1,12 @@
-import { expect } from "chai";
 import { Request, Response } from "express";
+import { expect } from "chai";
+
 import { isAuth } from "../../src/middlewares/is-auth";
-import { WebTokenService } from "../../src/services/other/WebTokenService";
+
+import WebTokenService from "../../src/services/other/WebTokenService";
 
 describe("isAuth middleware", () => {
     const res = {} as unknown as Response;
-
-    before(() => {
-        WebTokenService.init({
-            secret: "",
-            sign: () => "",
-            verify: () => "",
-        });
-    });
 
     it("should throw an error when no Authorization header is present", () => {
         const req = {
@@ -35,6 +29,12 @@ describe("isAuth middleware", () => {
     });
 
     it("should throw an error when Authorization header token is wrong", () => {
+        WebTokenService.init({
+            secret: "",
+            sign: () => "",
+            verify: () => "",
+        });
+
         const req = {
             get: () => "Bearer xyz",
         } as unknown as Request;
@@ -44,19 +44,21 @@ describe("isAuth middleware", () => {
         );
     });
 
-    // it("should set req.userId when Authorization header is correct", () => {
-    //     const req = {
-    //         get: () => "Bearer xyz",
-    //     } as unknown as Request;
+    it("should set req.userId when Authorization header is correct", () => {
+        WebTokenService.init({
+            secret: "",
+            sign: () => "",
+            verify: () => ({
+                userId: "xyz",
+            }),
+        });
 
-    //     stub(jwt, "verify");
+        const req = {
+            get: () => "Bearer xyz",
+        } as unknown as Request & { userId: string };
 
-    //     (jwt.verify as any).returns({ userId: "xyz" });
+        isAuth(req, res, () => {});
 
-    //     isAuth(req, res, () => {});
-
-    //     expect(req.userId).to.be.equal("xyz");
-
-    //     (jwt.verify as any).restore();
-    // });
+        expect(req.userId).to.be.equal("xyz");
+    });
 });

@@ -25,10 +25,10 @@ if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
 
+const jwtSecret = process.env.JWT_SECRET || "somesupersecret";
+
 EncryptionService.init(new BcryptjsEncryptionService());
-WebTokenService.init(
-    new JsonWebTokenService(process.env.JWT_SECRET || "somesupersecret")
-);
+WebTokenService.init(new JsonWebTokenService(jwtSecret));
 
 CityService.init(new MongooseCityService());
 TicketService.init(new MongooseTicketService());
