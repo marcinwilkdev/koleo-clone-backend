@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { encryptionService, userService } from "../app";
+import { userService } from "../app";
 
 import { handleErrors, validateRequest } from "../util/helpers";
 import HttpException from "../util/HttpException";
@@ -15,7 +15,8 @@ import {
     SignupRequestBody,
     SignupResponseBody,
 } from "./types/auth";
-import { WebTokenService } from "../services/other/WebTokenService";
+import WebTokenService from "../services/other/WebTokenService";
+import EncryptionService from "../services/other/EncryptionService";
 
 export const signin = async (
     req: Request,
@@ -34,7 +35,7 @@ export const signin = async (
             throw new HttpException("User not found.", 404);
         }
 
-        const isPasswordEqual = await encryptionService.compare(
+        const isPasswordEqual = await EncryptionService.getInstance().compare(
             password,
             user.password
         );
@@ -74,7 +75,7 @@ export const signup = async (
         const body = req.body as SignupRequestBody;
 
         const email = body.email;
-        const hashedPassword = await encryptionService.hash(body.password, 12);
+        const hashedPassword = await EncryptionService.getInstance().hash(body.password, 12);
 
         const user: IUser = {
             email,

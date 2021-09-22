@@ -1,11 +1,11 @@
-export default interface IWebTokenService {
+export interface IWebTokenService {
     secret: string;
 
     sign: (payload: any, expiresInHours: number) => string;
     verify: (token: string) => any;
 }
 
-export abstract class WebTokenService {
+export default abstract class WebTokenService {
     static instance: IWebTokenService;
 
     static init(instance: IWebTokenService) {

@@ -1,4 +1,4 @@
-import IWebTokenService from "../WebTokenService";
+import { IWebTokenService } from "../WebTokenService";
 
 import jwt from "jsonwebtoken";
 

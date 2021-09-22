@@ -9,7 +9,7 @@ import ticketsRoutes from "./routes/tickets";
 import citiesRoutes from "./routes/cities";
 
 import EncryptionService from "./services/other/EncryptionService";
-import { WebTokenService } from "./services/other/WebTokenService";
+import WebTokenService from "./services/other/WebTokenService";
 
 import BcryptjsEncryptionService from "./services/other/implementations/BcryptjsEncryptionService";
 import JsonWebTokenService from "./services/other/implementations/JsonWebTokenService";
@@ -24,9 +24,7 @@ if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
 
-export const encryptionService: EncryptionService =
-    new BcryptjsEncryptionService();
-
+EncryptionService.init(new BcryptjsEncryptionService());
 WebTokenService.init(
     new JsonWebTokenService(process.env.JWT_SECRET || "somesupersecret")
 );
