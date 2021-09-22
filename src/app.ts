@@ -17,6 +17,8 @@ import CityService from "./services/database/CityService";
 import MongooseCityService from "./services/implementations/database/MongooseCityService";
 import TicketService from "./services/database/TicketService";
 import MongooseTicketService from "./services/implementations/database/MongooseTicketService";
+import UserService from "./services/database/UserService";
+import MongooseUserService from "./services/implementations/database/MongooseUserService";
 
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
@@ -30,11 +32,11 @@ export const webTokenService: WebTokenService = new JsonWebTokenService(
 
 export const cityService: CityService = new MongooseCityService();
 export const ticketService: TicketService = new MongooseTicketService();
+export const userService: UserService = new MongooseUserService();
 
 const app = express();
 
 app.use(setCORSHeaders);
-
 app.use(express.json());
 
 app.use("/auth", authRoutes);

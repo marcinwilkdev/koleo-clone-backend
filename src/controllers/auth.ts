@@ -3,10 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import { handleErrors, validateRequest } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
-import { encryptionService } from "../app";
+import { encryptionService, userService } from "../app";
 import { webTokenService } from "../app";
-
-import User from "../models/user";
+import { IUser } from "../models/user";
 
 interface SigninRequestBody {
     email: string;
@@ -30,7 +29,7 @@ export const signin = async (
     const password = body.password;
 
     try {
-        const user = await User.findOne({ email: email });
+        const user = await userService.findByEmail(email);
 
         if (!user) {
             throw new HttpException("User not found.", 404);
@@ -45,7 +44,7 @@ export const signin = async (
             throw new HttpException("Wrong password.", 401);
         }
 
-        const token = webTokenService.sign({ userId: user._id.toString() }, 1);
+        const token = webTokenService.sign({ userId: user.id }, 1);
 
         let userData = user.email;
 
@@ -90,14 +89,14 @@ export const signup = async (
         const email = body.email;
         const hashedPassword = await encryptionService.hash(body.password, 12);
 
-        const user = new User({
+        const user: IUser = {
             email,
             password: hashedPassword,
-        });
+        };
 
-        const savedUser = await user.save();
+        const savedUser = await userService.save(user);
 
-        const token = webTokenService.sign({ userId: user._id.toString() }, 1);
+        const token = webTokenService.sign({ userId: savedUser.id }, 1);
 
         const userData = savedUser.email;
 
@@ -137,10 +136,10 @@ export const setData = async (
     const lastName = body.lastName;
     const dateOfBirth = body.dateOfBirth;
 
-    const userId = req.userId;
+    const userId = req.userId!;
 
     try {
-        const user = await User.findById(userId);
+        const user = await userService.findById(userId);
 
         if (!user) {
             throw new HttpException("User not found.", 404);
@@ -151,7 +150,7 @@ export const setData = async (
         user.lastName = lastName;
         user.dateOfBirth = new Date(dateOfBirth);
 
-        const savedUser = await user.save();
+        const savedUser = await userService.save(user);
 
         let userData = savedUser.email;
 

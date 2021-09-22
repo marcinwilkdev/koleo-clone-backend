@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { Types } from "mongoose";
 import { ticketService } from "../app";
 import { ISavedTicket, ITicket } from "../models/ticket";
 

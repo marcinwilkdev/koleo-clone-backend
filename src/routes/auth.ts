@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { body } from "express-validator";
+import { userService } from "../app";
 
 import { setData, signin, signup } from "../controllers/auth";
 
 import { isAuth } from "../middlewares/is-auth";
-
-import User from "../models/user";
 
 const router = Router();
 
@@ -15,7 +14,7 @@ router.put(
         body("email")
             .isEmail()
             .custom(async (value, { req }) => {
-                const user = await User.findOne({ email: value });
+                const user = await userService.findByEmail(value);
 
                 if (user) {
                     throw Error(
