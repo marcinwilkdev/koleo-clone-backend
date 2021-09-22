@@ -21,8 +21,8 @@ describe("handle errors", () => {
 
         handleErrors(err, next as unknown as NextFunction);
 
-        expect(exception?.message).to.equal("Something went wrong.");
-        expect(exception?.statusCode).to.equal(500);
+        expect(exception).to.have.property("message", "Something went wrong.");
+        expect(exception).to.have.property("statusCode", 500);
     });
 
     it("should send custom http exception if err passed", () => {
@@ -37,7 +37,7 @@ describe("handle errors", () => {
 
         handleErrors(err, next as unknown as NextFunction);
 
-        expect(exception?.message).to.equal("Test message");
-        expect(exception?.statusCode).to.equal(400);
+        expect(exception).to.have.property("message", "Test message");
+        expect(exception).to.have.property("statusCode", 400);
     });
 });

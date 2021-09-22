@@ -8,6 +8,14 @@ import WebTokenService from "../../src/services/other/WebTokenService";
 describe("isAuth middleware", () => {
     const res = {} as unknown as Response;
 
+    before(() => {
+        WebTokenService.init({
+            secret: "",
+            sign: () => "",
+            verify: () => "",
+        });
+    });
+
     it("should throw an error when no Authorization header is present", () => {
         const req = {
             get: () => "",
@@ -29,12 +37,6 @@ describe("isAuth middleware", () => {
     });
 
     it("should throw an error when Authorization header token is wrong", () => {
-        WebTokenService.init({
-            secret: "",
-            sign: () => "",
-            verify: () => "",
-        });
-
         const req = {
             get: () => "Bearer xyz",
         } as unknown as Request;
@@ -45,12 +47,8 @@ describe("isAuth middleware", () => {
     });
 
     it("should set req.userId when Authorization header is correct", () => {
-        WebTokenService.init({
-            secret: "",
-            sign: () => "",
-            verify: () => ({
-                userId: "xyz",
-            }),
+        WebTokenService.getInstance().verify = () => ({
+            userId: "xyz",
         });
 
         const req = {
@@ -59,6 +57,6 @@ describe("isAuth middleware", () => {
 
         isAuth(req, res, () => {});
 
-        expect(req.userId).to.be.equal("xyz");
+        expect(req).to.have.property("userId", "xyz");
     });
 });

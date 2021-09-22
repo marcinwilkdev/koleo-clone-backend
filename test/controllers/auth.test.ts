@@ -1,13 +1,32 @@
-import { expect } from "chai";
 import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
-import { signin, signup } from "../../src/controllers/auth";
-import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { expect } from "chai";
 
-import User from "../../src/models/user";
+import { signin, signup } from "../../src/controllers/auth";
+
+import UserService from "../../src/services/database/UserService";
+import EncryptionService from "../../src/services/other/EncryptionService";
+import WebTokenService from "../../src/services/other/WebTokenService";
+
 import HttpException from "../../src/util/HttpException";
-import { stub } from "sinon";
+
+import { ISavedUser } from "../../src/models/user";
+
+const savedUser: ISavedUser = {
+    id: "",
+    email: "",
+    password: "",
+    dateOfBirth: new Date(),
+    discount: "",
+    firstName: "",
+    lastName: "",
+};
+
+const req = {
+    body: {
+        email: "",
+        password: "",
+    },
+} as unknown as Request;
 
 describe("auth controller - signin", () => {
     const res = {
@@ -29,148 +48,105 @@ describe("auth controller - signin", () => {
         exception = exc;
     }) as unknown as NextFunction;
 
-    before((done) => {
-        mongoose
-            .connect(
-                "mongodb+srv://root:D7alUq7tPN5yVyxK@cluster0.hew9q.mongodb.net/koleo-dev-test?retryWrites=true&w=majority"
-            )
-            .then(() => {
-                const user = new User({
-                    email: "test@test.com",
-                    password: "test",
-                });
+    before(() => {
+        UserService.init({
+            save: async () => savedUser,
+            findByEmail: async () => null,
+            findById: async () => null,
+        });
 
-                return user.save();
-            })
-            .then(() => done());
+        EncryptionService.init({
+            compare: async () => false,
+            hash: async () => "",
+        });
+
+        WebTokenService.init({
+            secret: "",
+            sign: () => "xyz",
+            verify: () => {}
+        })
     });
 
     beforeEach(() => {
         exception = null;
     });
 
-    // it("should throw 'User not found.' if user hasn't been found", (done) => {
-    //     const req = {
-    //         body: {
-    //             email: "test2@test.com",
-    //             password: "test",
-    //         },
-    //     } as unknown as Request;
+    it("should throw 'User not found.' if user hasn't been found", (done) => {
+        signin(req, res as unknown as Response, next).then(() => {
+            expect(exception).to.have.property("message", "User not found.");
 
-    //     signin(req, res as unknown as Response, next).then(() => {
-    //         expect(exception).to.have.property("message", "User not found.");
+            done();
+        });
+    });
 
-    //         done();
-    //     });
-    // });
+    it("should throw 'Wrong password.' if password is wrong", (done) => {
+        UserService.getInstance().findByEmail = async () => savedUser;
 
-    // it("should throw 'Wrong password.' if password is wrong", (done) => {
-    //     const req = {
-    //         body: {
-    //             email: "test@test.com",
-    //             password: "test2",
-    //         },
-    //     } as unknown as Request;
+        signin(req, res as unknown as Response, next).then(() => {
+            expect(exception).to.have.property("message", "Wrong password.");
 
-    //     stub(bcryptjs, "compare");
+            done();
+        });
+    });
 
-    //     (bcryptjs.compare as any).resolves(false);
+    it("should set response token if authentication completed succesfully", (done) => {
+        EncryptionService.getInstance().compare = async () => true;
 
-    //     signin(req, res as unknown as Response, next).then(() => {
-    //         expect(exception).to.have.property("message", "Wrong password.");
+        signin(req, res as unknown as Response, next).then(() => {
+            expect(res).to.have.property("statusCode", 200);
+            expect(res.body).to.have.property(
+                "message",
+                "Logged in succesfully."
+            );
+            expect(res.body).to.have.property("token", "xyz");
 
-    //         (bcryptjs.compare as any).restore();
-
-    //         done();
-    //     });
-    // });
-
-    // it("should set response token if authentication completed succesfully", (done) => {
-    //     const req = {
-    //         body: {
-    //             email: "test@test.com",
-    //             password: "test",
-    //         },
-    //     } as unknown as Request;
-
-    //     stub(bcryptjs, "compare");
-    //     stub(jwt, "sign");
-
-    //     (bcryptjs.compare as any).resolves(true);
-    //     (jwt.sign as any).returns("xyz");
-
-    //     signin(req, res as unknown as Response, next).then(() => {
-    //         expect(res).to.have.property("statusCode", 200);
-    //         expect(res.body).to.have.property(
-    //             "message",
-    //             "Logged in succesfully."
-    //         );
-    //         expect(res.body).to.have.property("token", "xyz");
-
-    //         (bcryptjs.compare as any).restore();
-    //         (jwt.sign as any).restore();
-
-    //         done();
-    //     });
-    // });
-
-    after((done) => {
-        User.deleteMany({})
-            .then(() => mongoose.disconnect())
-            .then(() => done());
+            done();
+        });
     });
 });
 
-// describe("auth controller - signup", () => {
-//     const res = {
-//         statusCode: 500,
-//         body: {} as any,
-//         status: function (code: number) {
-//             this.statusCode = code;
-//             return this;
-//         },
-//         json: function (payload: any) {
-//             this.body = payload;
-//             return this;
-//         },
-//     };
+describe("auth controller - signup", () => {
+    const res = {
+        statusCode: 500,
+        body: {} as any,
+        status: function (code: number) {
+            this.statusCode = code;
+            return this;
+        },
+        json: function (payload: any) {
+            this.body = payload;
+            return this;
+        },
+    };
 
-//     before((done) => {
-//         mongoose
-//             .connect(
-//                 "mongodb+srv://root:D7alUq7tPN5yVyxK@cluster0.hew9q.mongodb.net/koleo-dev-test?retryWrites=true&w=majority"
-//             )
-//             .then(() => done());
-//     });
+    before(() => {
+        UserService.init({
+            save: async () => savedUser,
+            findByEmail: async () => null,
+            findById: async () => null,
+        });
 
-//     it("should send correct response if user has been created", (done) => {
-//         const req = {
-//             body: {
-//                 email: "test@test.com",
-//                 password: "test",
-//             },
-//         } as unknown as Request;
+        EncryptionService.init({
+            compare: async () => false,
+            hash: async () => "xyz",
+        });
 
-//         stub(bcryptjs, "hash");
+        WebTokenService.init({
+            secret: "",
+            sign: () => "xyz",
+            verify: () => {}
+        })
+    })
 
-//         (bcryptjs.hash as any).resolves("test");
+    it("should send correct response if user has been created", (done) => {
+        signup(req, res as unknown as Response, () => {}).then(() => {
+            expect(res).to.have.property("statusCode", 201);
+            expect(res.body).to.have.property(
+                "message",
+                "User created succesfully."
+            );
 
-//         signup(req, res as unknown as Response, () => {}).then(() => {
-//             expect(res).to.have.property("statusCode", 201);
-//             expect(res.body).to.have.property(
-//                 "message",
-//                 "User created succesfully."
-//             );
-
-//             (bcryptjs.hash as any).restore();
-
-//             done();
-//         });
-//     });
-
-//     after((done) => {
-//         User.deleteMany({})
-//             .then(() => mongoose.disconnect())
-//             .then(() => done());
-//     });
-// });
+            done();
+        });
+    });
+});
