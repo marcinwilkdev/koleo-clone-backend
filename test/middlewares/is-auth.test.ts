@@ -1,12 +1,14 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import { expect } from "chai";
 
 import { isAuth } from "../../src/middlewares/is-auth";
 
 import WebTokenService from "../../src/services/other/WebTokenService";
 
+import { createResponse } from "../createResponse";
+
 describe("isAuth middleware", () => {
-    const res = {} as unknown as Response;
+    const res = createResponse();
 
     before(() => {
         WebTokenService.init({

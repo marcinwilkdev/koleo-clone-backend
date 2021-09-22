@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request } from "express";
 import { expect } from "chai";
 
 import { setData, signin, signup } from "../../src/controllers/auth";
@@ -10,6 +10,8 @@ import WebTokenService from "../../src/services/other/WebTokenService";
 import HttpException from "../../src/util/HttpException";
 
 import { ISavedUser } from "../../src/models/user";
+
+import { createResponse } from "../createResponse";
 
 const savedUser: ISavedUser = {
     id: "",
@@ -30,24 +32,11 @@ const req = {
         lastName: "",
         dateOfBirth: new Date(),
     },
-    userId: ""
+    userId: "",
 } as unknown as Request;
 
 describe("auth controller - signin", () => {
-    const response = {
-        statusCode: 500,
-        body: {} as any,
-        status: function (code: number) {
-            this.statusCode = code;
-            return this;
-        },
-        json: function (payload: any) {
-            this.body = payload;
-            return this;
-        },
-    };
-
-    const res = response as unknown as Response & { body: any };
+    const res = createResponse();
 
     let exception: null | HttpException;
 
@@ -113,20 +102,7 @@ describe("auth controller - signin", () => {
 });
 
 describe("auth controller - signup", () => {
-    const response = {
-        statusCode: 500,
-        body: {} as any,
-        status: function (code: number) {
-            this.statusCode = code;
-            return this;
-        },
-        json: function (payload: any) {
-            this.body = payload;
-            return this;
-        },
-    };
-
-    const res = response as unknown as Response & { body: any };
+    const res = createResponse();
 
     before(() => {
         UserService.init({
@@ -161,20 +137,7 @@ describe("auth controller - signup", () => {
 });
 
 describe("auth controller - setData", () => {
-    const response = {
-        statusCode: 500,
-        body: {} as any,
-        status: function (code: number) {
-            this.statusCode = code;
-            return this;
-        },
-        json: function (payload: any) {
-            this.body = payload;
-            return this;
-        },
-    };
-
-    const res = response as unknown as Response & { body: any };
+    const res = createResponse();
 
     let exception: null | HttpException;
 

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import { expect } from "chai";
 
 import { ISavedCity } from "../../src/models/city";
@@ -6,6 +6,8 @@ import { ISavedCity } from "../../src/models/city";
 import { addCity, getCities } from "../../src/controllers/cities";
 
 import CityService from "../../src/services/database/CityService";
+
+import { createResponse } from "../createResponse";
 
 const savedCity: ISavedCity = {
     id: "",
@@ -19,20 +21,7 @@ const req = {
 } as unknown as Request;
 
 describe("cities controller - getCities", () => {
-    const response = {
-        statusCode: 500,
-        body: {} as any,
-        status: function (code: number) {
-            this.statusCode = code;
-            return this;
-        },
-        json: function (payload: any) {
-            this.body = payload;
-            return this;
-        },
-    };
-
-    const res = response as unknown as Response & { body: any };
+    const res = createResponse();
 
     before(() => {
         CityService.init({
@@ -52,20 +41,7 @@ describe("cities controller - getCities", () => {
 });
 
 describe("cities controller - addCity", () => {
-    const response = {
-        statusCode: 500,
-        body: {} as any,
-        status: function (code: number) {
-            this.statusCode = code;
-            return this;
-        },
-        json: function (payload: any) {
-            this.body = payload;
-            return this;
-        },
-    };
-
-    const res = response as unknown as Response & { body: any };
+    const res = createResponse();
 
     before(() => {
         CityService.init({
