@@ -96,7 +96,7 @@ describe("auth controller - signin", () => {
         });
     });
 
-    it("should set response token if authentication completed succesfully", (done) => {
+    it("should set authentication token if authentication completed succesfully", (done) => {
         EncryptionService.getInstance().compare = async () => true;
 
         signin(req, res, next).then(() => {
