@@ -33,6 +33,14 @@ export default class MongooseUserService implements IUserService {
         return formattedUser;
     }
 
+    async update(user: ISavedUser) {
+        const savedUser = await User.findByIdAndUpdate(user.id, user);
+
+        const formattedUser = this.formatUser(savedUser);
+
+        return formattedUser;
+    }
+
     private formatUser(user: IUserDocument): ISavedUser {
         return {
             id: user._id.toString(),

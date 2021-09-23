@@ -126,7 +126,7 @@ export const setData = async (
         user.lastName = lastName;
         user.dateOfBirth = dateOfBirth;
 
-        const savedUser = await UserService.getInstance().save(user);
+        const savedUser = await UserService.getInstance().update(user);
 
         let userData = savedUser.email;
 
