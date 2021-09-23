@@ -1,6 +1,6 @@
 import { NextFunction, Request } from "express";
 import { validationResult } from "express-validator";
-import connection, { ISavedConnection } from "../models/connection";
+import { ISavedConnection } from "../models/connection";
 import UserService from "../services/database/UserService";
 
 import HttpException from "./HttpException";

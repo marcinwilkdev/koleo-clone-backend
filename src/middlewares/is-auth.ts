@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import WebTokenService from "../services/other/WebTokenService";
+import { handleErrors } from "../util/helpers";
 
 import HttpException from "../util/HttpException";
 
@@ -39,11 +40,16 @@ const getPayloadFromToken = (token: string) => {
 };
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = getAuthHeader(req);
-    const token = getTokenFromHeader(authHeader);
-    const payload = getPayloadFromToken(token) as AuthPayload;
+    try {
+        const authHeader = getAuthHeader(req);
+        const token = getTokenFromHeader(authHeader);
+        const payload = getPayloadFromToken(token) as AuthPayload;
 
-    req.userId = payload.userId;
+        req.userId = payload.userId;
+    } catch(err) {
+        handleErrors(err, next);
+        return;
+    }
 
     next();
 };

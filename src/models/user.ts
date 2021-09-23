@@ -7,6 +7,7 @@ export interface IUser {
     firstName?: string;
     lastName?: string;
     dateOfBirth?: Date;
+    isAdmin?: boolean;
 }
 
 export interface ISavedUser extends IUser {
@@ -28,6 +29,7 @@ const userSchema = new Schema<IUserDocument>({
     firstName: String,
     lastName: String,
     dateOfBirth: Date,
+    isAdmin: Boolean,
 });
 
 export default model<IUserDocument>("User", userSchema);

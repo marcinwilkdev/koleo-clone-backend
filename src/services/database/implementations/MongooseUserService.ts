@@ -52,6 +52,7 @@ export default class MongooseUserService implements IUserService {
             discount: user.discount,
             firstName: user.firstName,
             lastName: user.lastName,
+            isAdmin: user.isAdmin ? true : false,
         };
     }
 }
