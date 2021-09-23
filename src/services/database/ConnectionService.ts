@@ -2,6 +2,7 @@ import { IConnection, ISavedConnection } from "../../models/connection";
 
 export interface IConnectionService {
     save: (connection: IConnection) => Promise<ISavedConnection>;
+    getConnectionsByCitiesAndDate: (from: string, to: string, date: string) => Promise<ISavedConnection[]>;
 }
 
 export default class ConnectionService {
