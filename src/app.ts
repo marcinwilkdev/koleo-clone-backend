@@ -7,6 +7,7 @@ import { setCORSHeaders } from "./middlewares/headers";
 import authRoutes from "./routes/auth";
 import ticketsRoutes from "./routes/tickets";
 import citiesRoutes from "./routes/cities";
+import connectionsRoutes from "./routes/connections";
 
 import EncryptionService from "./services/other/EncryptionService";
 import WebTokenService from "./services/other/WebTokenService";
@@ -45,6 +46,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/tickets", ticketsRoutes);
 app.use("/cities", citiesRoutes);
+app.use("/connections", connectionsRoutes);
 
 app.use(errorsHandler);
 
