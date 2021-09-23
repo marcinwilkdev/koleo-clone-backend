@@ -25,7 +25,7 @@ export interface SetDataRequestBody {
     discount: string;
     firstName: string;
     lastName: string;
-    dateOfBirth: string;
+    dateOfBirth: Date;
 }
 
 export interface SetDataResponseBody {

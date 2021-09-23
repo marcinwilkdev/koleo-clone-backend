@@ -124,7 +124,7 @@ export const setData = async (
         user.discount = discount;
         user.firstName = firstName;
         user.lastName = lastName;
-        user.dateOfBirth = new Date(dateOfBirth);
+        user.dateOfBirth = dateOfBirth;
 
         const savedUser = await UserService.getInstance().save(user);
 
