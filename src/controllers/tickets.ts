@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import TicketService from "../services/database/TicketService";
 
-import { handleErrors } from "../util/helpers";
+import { getConnectionPrice, getDiscount, handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
 import { ITicket } from "../models/ticket";
@@ -13,6 +13,8 @@ import {
     GetTicketsCountResponseBody,
     GetTicketsResponseBody,
 } from "./types/ticket";
+import ConnectionService from "../services/database/ConnectionService";
+import { ISavedConnection } from "../models/connection";
 
 const TICKETS_PER_PAGE = 10;
 
@@ -21,18 +23,54 @@ export const createTicket = async (
     res: Response,
     next: NextFunction
 ) => {
-    const { date, arrivalCity, departureCity, price, ticketType, trainType } =
+    const { id, arrivalCity, departureCity } =
         req.body as CreateTicketRequestBody;
 
     const ownerId = req.userId!;
 
     try {
+        const connection = await ConnectionService.getInstance().findById(id);
+
+        if (!connection) {
+            throw new HttpException("Connection not found.", 404);
+        }
+
+        const cities = connection.cities;
+
+        const arrivalCityIndex = cities.findIndex(
+            (city) => city.city.name === arrivalCity
+        );
+        const departureCityIndex = cities.findIndex(
+            (city) => city.city.name === departureCity
+        );
+
+        if (arrivalCityIndex < 0 || departureCityIndex < 0) {
+            throw new HttpException("City not found.", 404);
+        }
+
+        const slicedCities = cities.slice(
+            departureCityIndex,
+            arrivalCityIndex + 1
+        );
+
+        const slicedConnection: ISavedConnection = {
+            ...connection,
+            cities: slicedCities,
+        };
+
+        const date = cities[departureCityIndex].date;
+        const trainType = connection.trainType;
+
+        const discount = await getDiscount(req);
+
+        const price = getConnectionPrice(slicedConnection, discount);
+
         const ticket: ITicket = {
             date,
             arrivalCity,
             departureCity,
             price,
-            ticketType,
+            ticketType: "jednorazowy",
             trainType,
             ownerId,
         };
@@ -83,7 +121,8 @@ export const getTicketsCount = async (
     const ownerId = req.userId!;
 
     try {
-        const ticketsCount = await TicketService.getInstance().countAllByOwnerId(ownerId);
+        const ticketsCount =
+            await TicketService.getInstance().countAllByOwnerId(ownerId);
 
         const responseBody: GetTicketsCountResponseBody = {
             message: "Tickets count fetched successfully.",

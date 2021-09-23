@@ -20,6 +20,16 @@ export default class MongooseConnectionService implements IConnectionService {
         return formattedConnection;
     }
 
+    async findById(id: string) {
+        const foundConnection = await Connection.findById(id);
+
+        if(!foundConnection) return null;
+
+        const formattedConnection = this.formatConnection(foundConnection);
+
+        return formattedConnection;
+    }
+
     async getConnectionsByCities(from: string, to: string) {
         const connections = await Connection.find({
             "cities.city.name": from,

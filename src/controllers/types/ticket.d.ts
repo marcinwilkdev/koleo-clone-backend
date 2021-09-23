@@ -1,10 +1,7 @@
 export interface CreateTicketRequestBody {
-    date: Date;
+    id: string;
     departureCity: string;
     arrivalCity: string;
-    ticketType: string;
-    trainType: string;
-    price: number;
 }
 
 export interface CreateTicketResponseBody {

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { IConnection, ISavedConnectionWithPrice } from "../models/connection";
 import ConnectionService from "../services/database/ConnectionService";
 import UserService from "../services/database/UserService";
-import { handleErrors } from "../util/helpers";
+import { getConnectionPrice, getDiscount, handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 import {
     AddConnectionResponseBody,
@@ -50,23 +50,11 @@ export const findConnections = async (
                 to
             );
 
-        let discount = 0;
-
-        if(req.userId) {
-            const user = await UserService.getInstance().findById(req.userId);
-
-            if(user && user.discount === "true") {
-                discount = 0.5;
-            }
-        }
+        const discount = await getDiscount(req);
 
         const connectionsWithPrice: ISavedConnectionWithPrice[] =
             connections.map((connection) => {
-                let price = connection.cities
-                    .slice(0, connection.cities.length - 1)
-                    .reduce((prev, curr) => prev + curr.price, 0);
-
-                price *= (1 - discount);
+                const price = getConnectionPrice(connection, discount);
 
                 return {
                     ...connection,
