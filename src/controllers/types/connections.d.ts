@@ -1,4 +1,4 @@
-import { ISavedConnection } from "../../models/connection";
+import { ISavedConnection, ISavedConnectionWithPrice } from "../../models/connection";
 
 export interface AddConnectionResponseBody {
     message: string;
@@ -6,5 +6,5 @@ export interface AddConnectionResponseBody {
 
 export interface FindConnectionsResponseBody {
     message: string;
-    connections: ISavedConnection[];
+    connections: ISavedConnectionWithPrice[];
 }

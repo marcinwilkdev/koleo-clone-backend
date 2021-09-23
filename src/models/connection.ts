@@ -15,6 +15,10 @@ export interface ISavedConnection extends IConnection {
     id: string;
 }
 
+export interface ISavedConnectionWithPrice extends ISavedConnection {
+    price: number;
+}
+
 export interface IConnectionDocument extends Document, IConnection {}
 
 const connectionSchema = new Schema<IConnectionDocument>({

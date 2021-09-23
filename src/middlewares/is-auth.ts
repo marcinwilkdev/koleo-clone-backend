@@ -4,7 +4,7 @@ import WebTokenService from "../services/other/WebTokenService";
 
 import HttpException from "../util/HttpException";
 
-interface AuthPayload {
+export interface AuthPayload {
     userId: string;
 }
 

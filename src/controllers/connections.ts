@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { IConnection } from "../models/connection";
+import { IConnection, ISavedConnectionWithPrice } from "../models/connection";
 import ConnectionService from "../services/database/ConnectionService";
+import UserService from "../services/database/UserService";
 import { handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 import {
@@ -49,9 +50,35 @@ export const findConnections = async (
                 to
             );
 
+        let discount = 0;
+
+        console.log(req.userId);
+
+        if(req.userId) {
+            const user = await UserService.getInstance().findById(req.userId);
+
+            if(user && user.discount === "true") {
+                discount = 0.5;
+            }
+        }
+
+        const connectionsWithPrice: ISavedConnectionWithPrice[] =
+            connections.map((connection) => {
+                let price = connection.cities
+                    .slice(0, connection.cities.length - 1)
+                    .reduce((prev, curr) => prev + curr.price, 0);
+
+                price *= (1 - discount);
+
+                return {
+                    ...connection,
+                    price,
+                };
+            });
+
         const responseBody: FindConnectionsResponseBody = {
             message: "Connections fetched succesfully.",
-            connections,
+            connections: connectionsWithPrice,
         };
 
         res.status(200).json(responseBody);
