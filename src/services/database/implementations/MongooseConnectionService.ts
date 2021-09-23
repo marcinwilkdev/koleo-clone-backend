@@ -12,7 +12,9 @@ export default class MongooseConnectionService implements IConnectionService {
     async save(connection: IConnection) {
         const mongooseConnection = new Connection({ ...connection });
 
-        const formattedConnection = this.formatConnection(mongooseConnection);
+        const savedConnection = await mongooseConnection.save();
+
+        const formattedConnection = this.formatConnection(savedConnection);
 
         return formattedConnection;
     }

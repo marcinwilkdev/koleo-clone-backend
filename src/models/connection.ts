@@ -1,10 +1,10 @@
 import { Document, model, Schema } from "mongoose";
 
-import City, { ICity } from "./city";
+import City, { ICity, ISavedCity } from "./city";
 
 export interface IConnection {
     cities: {
-        city: ICity;
+        city: ISavedCity;
         date: Date;
     }[];
     trainType: string;
@@ -20,7 +20,16 @@ const connectionSchema = new Schema<IConnectionDocument>({
     cities: [
         {
             city: {
-                type: City,
+                type: {
+                    id: {
+                        type: String,
+                        required: true,
+                    },
+                    name: {
+                        type: String,
+                        required: true,
+                    },
+                },
                 required: true,
             },
             date: {
