@@ -1,4 +1,4 @@
-import connection, {
+import {
     IConnection,
     IConnectionDocument,
     ISavedConnection,
@@ -32,17 +32,42 @@ export default class MongooseConnectionService implements IConnectionService {
             .find({ "cities.city.name": to });
 
         const filteredConnections = connections.filter((connection) => {
-            const departureCity = connection.cities.find((city) => city.city.name === from);
-            const arrivalCity = connection.cities.find((city) => city.city.name === to);
+            const departureCity = connection.cities.find(
+                (city) => city.city.name === from
+            );
+            const arrivalCity = connection.cities.find(
+                (city) => city.city.name === to
+            );
 
-            if(!departureCity || !arrivalCity) return false;
+            if (!departureCity || !arrivalCity) return false;
 
             return departureCity.date < arrivalCity.date;
-        })
+        });
 
-        const formattedConnections = filteredConnections.map(this.formatConnection);
+        const formattedConnections = filteredConnections.map(
+            this.formatConnection
+        );
 
-        return formattedConnections;
+        const preparedConnections: ISavedConnection[] = formattedConnections.map((connection) => {
+            const departureCityIndex = connection.cities.findIndex(
+                (city) => city.city.name === from
+            );
+            const arrivalCityIndex = connection.cities.findIndex(
+                (city) => city.city.name === to
+            );
+
+            const preparedCities = connection.cities.slice(
+                departureCityIndex,
+                arrivalCityIndex + 1
+            );
+
+            return {
+                ...connection,
+                cities: preparedCities,
+            };
+        });
+
+        return preparedConnections;
     }
 
     private formatConnection(connection: IConnectionDocument) {
