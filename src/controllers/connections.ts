@@ -37,18 +37,16 @@ export const findConnections = async (
 ) => {
     const from = req.query.from as string;
     const to = req.query.to as string;
-    const date = req.query.date as string;
 
     try {
-        if (!from || !to || !date) {
+        if (!from || !to) {
             throw new HttpException("Couldn't find connections.", 404);
         }
 
         const connections =
-            await ConnectionService.getInstance().getConnectionsByCitiesAndDate(
+            await ConnectionService.getInstance().getConnectionsByCities(
                 from,
-                to,
-                date
+                to
             );
 
         const responseBody: FindConnectionsResponseBody = {

@@ -20,16 +20,10 @@ export default class MongooseConnectionService implements IConnectionService {
         return formattedConnection;
     }
 
-    async getConnectionsByCitiesAndDate(
-        from: string,
-        to: string,
-        date: string
-    ) {
-        const connections = await Connection.find({ dateString: date })
-            .find({
-                "cities.city.name": from,
-            })
-            .find({ "cities.city.name": to });
+    async getConnectionsByCities(from: string, to: string) {
+        const connections = await Connection.find({
+            "cities.city.name": from,
+        }).find({ "cities.city.name": to });
 
         const filteredConnections = connections.filter((connection) => {
             const departureCity = connection.cities.find(
@@ -48,24 +42,25 @@ export default class MongooseConnectionService implements IConnectionService {
             this.formatConnection
         );
 
-        const preparedConnections: ISavedConnection[] = formattedConnections.map((connection) => {
-            const departureCityIndex = connection.cities.findIndex(
-                (city) => city.city.name === from
-            );
-            const arrivalCityIndex = connection.cities.findIndex(
-                (city) => city.city.name === to
-            );
+        const preparedConnections: ISavedConnection[] =
+            formattedConnections.map((connection) => {
+                const departureCityIndex = connection.cities.findIndex(
+                    (city) => city.city.name === from
+                );
+                const arrivalCityIndex = connection.cities.findIndex(
+                    (city) => city.city.name === to
+                );
 
-            const preparedCities = connection.cities.slice(
-                departureCityIndex,
-                arrivalCityIndex + 1
-            );
+                const preparedCities = connection.cities.slice(
+                    departureCityIndex,
+                    arrivalCityIndex + 1
+                );
 
-            return {
-                ...connection,
-                cities: preparedCities,
-            };
-        });
+                return {
+                    ...connection,
+                    cities: preparedCities,
+                };
+            });
 
         return preparedConnections;
     }
@@ -75,7 +70,6 @@ export default class MongooseConnectionService implements IConnectionService {
             id: connection._id.toString(),
             trainType: connection.trainType,
             cities: connection.cities,
-            dateString: connection.dateString,
         };
 
         return formattedConnection;

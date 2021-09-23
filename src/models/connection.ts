@@ -8,7 +8,6 @@ export interface IConnection {
         date: Date;
     }[];
     trainType: string;
-    dateString: string;
 }
 
 export interface ISavedConnection extends IConnection {
@@ -43,10 +42,6 @@ const connectionSchema = new Schema<IConnectionDocument>({
         type: String,
         required: true,
     },
-    dateString: {
-        type: String,
-        required: true
-    }
 });
 
 export default model<IConnectionDocument>("Connection", connectionSchema);
