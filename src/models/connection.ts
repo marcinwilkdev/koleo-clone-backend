@@ -6,6 +6,7 @@ export interface IConnection {
     cities: {
         city: ISavedCity;
         date: Date;
+        price: number;
     }[];
     trainType: string;
 }
@@ -34,6 +35,10 @@ const connectionSchema = new Schema<IConnectionDocument>({
             },
             date: {
                 type: Date,
+                required: true,
+            },
+            price: {
+                type: Number,
                 required: true,
             },
         },
