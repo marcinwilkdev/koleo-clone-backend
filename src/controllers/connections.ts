@@ -52,8 +52,6 @@ export const findConnections = async (
 
         let discount = 0;
 
-        console.log(req.userId);
-
         if(req.userId) {
             const user = await UserService.getInstance().findById(req.userId);
 
