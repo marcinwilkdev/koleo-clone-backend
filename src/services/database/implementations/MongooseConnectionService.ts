@@ -5,6 +5,7 @@ import connection, {
 } from "../../../models/connection";
 
 import Connection from "../../../models/connection";
+import HttpException from "../../../util/HttpException";
 
 import { IConnectionService } from "../ConnectionService";
 
@@ -30,11 +31,16 @@ export default class MongooseConnectionService implements IConnectionService {
             })
             .find({ "cities.city.name": to });
 
-        // const filteredConnections = connections.filter((connection) => {
+        const filteredConnections = connections.filter((connection) => {
+            const departureCity = connection.cities.find((city) => city.city.name === from);
+            const arrivalCity = connection.cities.find((city) => city.city.name === to);
 
-        // })
+            if(!departureCity || !arrivalCity) return false;
 
-        const formattedConnections = connections.map(this.formatConnection);
+            return departureCity.date < arrivalCity.date;
+        })
+
+        const formattedConnections = filteredConnections.map(this.formatConnection);
 
         return formattedConnections;
     }
