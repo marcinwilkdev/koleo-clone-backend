@@ -62,7 +62,7 @@ mongoose
     )
     .then(() =>
         app.listen(8080, () =>
-            console.log("SERVER STARTED ON http://localhost:8080")
+            console.log("SERVER STARTED")
         )
     )
     .catch((err) => console.log(err));
