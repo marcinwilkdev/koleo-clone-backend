@@ -1,6 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
 
+import helmet from "helmet";
+import compression from "compression";
+
 import { errorsHandler } from "./middlewares/errors";
 import { setCORSHeaders } from "./middlewares/headers";
 
@@ -39,6 +42,9 @@ UserService.init(new MongooseUserService());
 ConnectionService.init(new MongooseConnectionService());
 
 const app = express();
+
+app.use(helmet());
+app.use(compression());
 
 app.use(setCORSHeaders);
 app.use(express.json());
