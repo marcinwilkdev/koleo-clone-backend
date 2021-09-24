@@ -61,6 +61,10 @@ export const addConnection = async (
     const connection = req.body as IConnection;
 
     try {
+        if(!connection.cities || !connection.trainType) {
+            throw HttpException.wrongData();
+        }
+
         await ConnectionService.getInstance().save(connection);
 
         const responseBody: AddConnectionResponseBody = {

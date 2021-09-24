@@ -84,6 +84,10 @@ export const signup = async (
 
         const body = req.body as SignupRequestBody;
 
+        if(!body.email || !body.password) {
+            throw HttpException.wrongData();
+        }
+
         const email = body.email;
         const hashedPassword = await EncryptionService.getInstance().hash(
             body.password,
@@ -124,24 +128,23 @@ export const setData = async (
 ) => {
     const body = req.body as SetDataRequestBody;
 
-    const discount = body.discount;
-    const firstName = body.firstName;
-    const lastName = body.lastName;
-    const dateOfBirth = body.dateOfBirth;
-
     const userId = req.userId!;
 
     try {
+        if(!body.discount || !body.firstName || !body.lastName || !body.dateOfBirth) {
+            throw HttpException.wrongData();
+        }
+        
         const user = await UserService.getInstance().findById(userId);
 
         if (!user) {
             throw new HttpException("User not found.", 404);
         }
 
-        user.discount = discount;
-        user.firstName = firstName;
-        user.lastName = lastName;
-        user.dateOfBirth = dateOfBirth;
+        user.discount = body.discount;
+        user.firstName = body.firstName;
+        user.lastName = body.lastName;
+        user.dateOfBirth = body.dateOfBirth;
 
         const savedUser = await UserService.getInstance().update(user);
 

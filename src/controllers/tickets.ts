@@ -46,7 +46,10 @@ const trimConnection = (
         throw new HttpException("City not found.", 404);
     }
 
-    const preparedCities = cities.slice(departureCityIndex, arrivalCityIndex + 1);
+    const preparedCities = cities.slice(
+        departureCityIndex,
+        arrivalCityIndex + 1
+    );
 
     const preparedConnection: ISavedConnection = {
         ...connection,
@@ -61,13 +64,16 @@ export const createTicket = async (
     res: Response,
     next: NextFunction
 ) => {
-    const { id, arrivalCity, departureCity } =
-        req.body as CreateTicketRequestBody;
+    const body = req.body as CreateTicketRequestBody;
 
     const ownerId = req.userId!;
 
     try {
-        const connection = await ConnectionService.getInstance().findById(id);
+        if(!body.arrivalCity || !body.departureCity || !body.id) {
+            throw HttpException.wrongData();
+        }
+
+        const connection = await ConnectionService.getInstance().findById(body.id);
 
         if (!connection) {
             throw new HttpException("Connection not found.", 404);
@@ -75,8 +81,14 @@ export const createTicket = async (
 
         const date = new Date();
         const trainType = connection.trainType;
+        const departureCity = body.departureCity;
+        const arrivalCity = body.arrivalCity;
 
-        const preparedConnection = trimConnection(connection, departureCity, arrivalCity);
+        const preparedConnection = trimConnection(
+            connection,
+            departureCity,
+            arrivalCity
+        );
 
         const discount = await getUserDiscount(req);
 
