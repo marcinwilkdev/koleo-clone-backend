@@ -7,6 +7,7 @@ import WebTokenService from "../../src/services/other/WebTokenService";
 
 import { createResponse } from "../createResponse";
 import HttpException from "../../src/util/HttpException";
+import { initServices } from "../initServices";
 
 describe("isAuth middleware", () => {
     const res = createResponse();
@@ -17,13 +18,7 @@ describe("isAuth middleware", () => {
         exception = exc;
     }) as unknown as NextFunction;
 
-    before(() => {
-        WebTokenService.init({
-            secret: "",
-            sign: () => "",
-            verify: () => "",
-        });
-    });
+    before(() => initServices());
 
     it("should throw an error when no Authorization header is present", () => {
         const req = {

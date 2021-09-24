@@ -12,6 +12,7 @@ import HttpException from "../../src/util/HttpException";
 import { ISavedUser } from "../../src/models/user";
 
 import { createResponse } from "../createResponse";
+import { initServices } from "../initServices";
 
 const savedUser: ISavedUser = {
     id: "",
@@ -44,25 +45,7 @@ describe("auth controller - signin", () => {
         exception = exc;
     }) as unknown as NextFunction;
 
-    before(() => {
-        UserService.init({
-            save: async () => savedUser,
-            update: async () => savedUser,
-            findByEmail: async () => null,
-            findById: async () => null,
-        });
-
-        EncryptionService.init({
-            compare: async () => false,
-            hash: async () => "",
-        });
-
-        WebTokenService.init({
-            secret: "",
-            sign: () => "xyz",
-            verify: () => {},
-        });
-    });
+    before(() => initServices());
 
     beforeEach(() => {
         exception = null;
@@ -88,6 +71,7 @@ describe("auth controller - signin", () => {
 
     it("should set authentication token if authentication completed succesfully", (done) => {
         EncryptionService.getInstance().compare = async () => true;
+        WebTokenService.getInstance().sign = () => "xyz";
 
         signin(req, res, next).then(() => {
             expect(res).to.have.property("statusCode", 200);
@@ -105,25 +89,7 @@ describe("auth controller - signin", () => {
 describe("auth controller - signup", () => {
     const res = createResponse();
 
-    before(() => {
-        UserService.init({
-            save: async () => savedUser,
-            update: async () => savedUser,
-            findByEmail: async () => null,
-            findById: async () => null,
-        });
-
-        EncryptionService.init({
-            compare: async () => false,
-            hash: async () => "xyz",
-        });
-
-        WebTokenService.init({
-            secret: "",
-            sign: () => "xyz",
-            verify: () => {},
-        });
-    });
+    before(() => initServices());
 
     it("should send correct response if user has been created", (done) => {
         signup(req, res, () => {}).then(() => {
@@ -147,14 +113,7 @@ describe("auth controller - setData", () => {
         exception = exc;
     }) as unknown as NextFunction;
 
-    before(() => {
-        UserService.init({
-            save: async () => savedUser,
-            update: async () => savedUser,
-            findByEmail: async () => null,
-            findById: async () => null,
-        });
-    });
+    before(() => initServices());
 
     it("should throw 'User not found.' if user hasn't been found", (done) => {
         setData(req, res, next).then(() => {

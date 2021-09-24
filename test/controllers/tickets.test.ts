@@ -12,27 +12,7 @@ import { ISavedUser } from "../../src/models/user";
 import ConnectionService from "../../src/services/database/ConnectionService";
 import { ISavedConnection } from "../../src/models/connection";
 import HttpException from "../../src/util/HttpException";
-
-const savedUser: ISavedUser = {
-    id: "",
-    email: "",
-    password: "",
-    dateOfBirth: new Date(),
-    discount: "",
-    firstName: "",
-    lastName: "",
-};
-
-const savedTicket: ISavedTicket = {
-    id: "",
-    date: new Date(),
-    arrivalCity: "",
-    departureCity: "",
-    price: 0,
-    ticketType: "",
-    trainType: "",
-    ownerId: "",
-};
+import { initServices } from "../initServices";
 
 const savedConnection: ISavedConnection = {
     cities: [],
@@ -65,26 +45,7 @@ describe("tickets controller - createTicket", () => {
         exception = exc;
     }) as unknown as NextFunction;
 
-    before(() => {
-        TicketService.init({
-            countAllByOwnerId: async () => 0,
-            findAllByOwnerIdPaged: async () => [],
-            save: async () => savedTicket,
-        });
-
-        ConnectionService.init({
-            findById: async () => null,
-            getConnectionsByCities: async () => [],
-            save: async () => savedConnection,
-        });
-
-        UserService.init({
-            save: async () => savedUser,
-            update: async () => savedUser,
-            findByEmail: async () => null,
-            findById: async () => null,
-        });
-    });
+    before(() => initServices());
 
     it("should throw 'Connection not found.' if connection hasn't been found", (done) => {
         createTicket(req, res, next).then(() => {
@@ -132,13 +93,7 @@ describe("tickets controller - createTicket", () => {
 describe("tickets controller - getTickets", () => {
     const res = createResponse();
 
-    before(() => {
-        TicketService.init({
-            countAllByOwnerId: async () => 0,
-            findAllByOwnerIdPaged: async () => [],
-            save: async () => savedTicket,
-        });
-    });
+    before(() => initServices());
 
     it("should send correct response if ticket have been fetched", (done) => {
         getTickets(req, res, () => {}).then(() => {
@@ -156,13 +111,7 @@ describe("tickets controller - getTickets", () => {
 describe("tickets controller - getTicketsCount", () => {
     const res = createResponse();
 
-    before(() => {
-        TicketService.init({
-            countAllByOwnerId: async () => 0,
-            findAllByOwnerIdPaged: async () => [],
-            save: async () => savedTicket,
-        });
-    });
+    before(() => initServices());
 
     it("should send correct response if tickets count has been fetched", (done) => {
         getTicketsCount(req, res, () => {}).then(() => {

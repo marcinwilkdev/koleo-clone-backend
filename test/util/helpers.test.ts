@@ -6,6 +6,7 @@ import { getUserDiscount, handleErrors } from "../../src/util/helpers";
 import HttpException from "../../src/util/HttpException";
 import UserService from "../../src/services/database/UserService";
 import { ISavedUser } from "../../src/models/user";
+import { initServices } from "../initServices";
 
 const savedUser: ISavedUser = {
     id: "",
@@ -55,14 +56,7 @@ describe("handle errors", () => {
 });
 
 describe("get userDiscount", () => {
-    before(() => {
-        UserService.init({
-            findByEmail: async () => null,
-            findById: async () => null,
-            save: async () => savedUser,
-            update: async () => savedUser
-        })
-    })
+    before(() => initServices())
 
     it("should return 0 if user doesn't have discount or user not present", (done) => {
         getUserDiscount(req).then((discount) => {

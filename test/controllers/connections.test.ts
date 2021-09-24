@@ -12,22 +12,7 @@ import { expect } from "chai";
 import HttpException from "../../src/util/HttpException";
 import UserService from "../../src/services/database/UserService";
 import { ISavedUser } from "../../src/models/user";
-
-const savedUser: ISavedUser = {
-    id: "",
-    email: "",
-    password: "",
-    dateOfBirth: new Date(),
-    discount: "",
-    firstName: "",
-    lastName: "",
-};
-
-const savedConnection: ISavedConnection = {
-    cities: [],
-    trainType: "",
-    id: "",
-};
+import { initServices } from "../initServices";
 
 const req = {
     body: {
@@ -40,13 +25,7 @@ const req = {
 describe("connections controller - add connection", () => {
     const res = createResponse();
 
-    before(() => {
-        ConnectionService.init({
-            findById: async () => null,
-            getConnectionsByCities: async () => [],
-            save: async () => savedConnection,
-        });
-    });
+    before(() => initServices());
 
     it("should send correct response if connection has been created", (done) => {
         addConnection(req, res, () => {}).then(() => {
@@ -70,20 +49,7 @@ describe("connections controller - find connections", () => {
         exception = exc;
     }) as unknown as NextFunction;
 
-    before(() => {
-        ConnectionService.init({
-            findById: async () => null,
-            getConnectionsByCities: async () => [],
-            save: async () => savedConnection,
-        });
-
-        UserService.init({
-            save: async () => savedUser,
-            update: async () => savedUser,
-            findByEmail: async () => null,
-            findById: async () => null,
-        });
-    });
+    before(() => initServices());
 
     it("should throw 'Couldn't find connections.' if query parameters not present", (done) => {
         findConnections(req, res, next).then(() => {
@@ -99,7 +65,6 @@ describe("connections controller - find connections", () => {
     it("should send correct response if connections have been fetched", (done) => {
         req.query.from = "xyz";
         req.query.to = "xyz";
-        
         
         findConnections(req, res, next).then(() => {
             expect(res).to.have.property("statusCode", 200);

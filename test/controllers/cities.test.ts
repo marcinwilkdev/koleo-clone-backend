@@ -8,11 +8,7 @@ import { addCity, getCities } from "../../src/controllers/cities";
 import CityService from "../../src/services/database/CityService";
 
 import { createResponse } from "../createResponse";
-
-const savedCity: ISavedCity = {
-    id: "",
-    name: "",
-};
+import { initServices } from "../initServices";
 
 const req = {
     body: {
@@ -23,12 +19,7 @@ const req = {
 describe("cities controller - getCities", () => {
     const res = createResponse();
 
-    before(() => {
-        CityService.init({
-            findAll: async () => [],
-            save: async () => savedCity,
-        });
-    });
+    before(() => initServices());
 
     it("should send correct response if cities have been fetched", (done) => {
         getCities(req, res, () => {}).then(() => {
@@ -43,12 +34,7 @@ describe("cities controller - getCities", () => {
 describe("cities controller - addCity", () => {
     const res = createResponse();
 
-    before(() => {
-        CityService.init({
-            findAll: async () => [],
-            save: async () => savedCity,
-        });
-    });
+    before(() => initServices());
 
     it("should send correct response if city has been added", (done) => {
         addCity(req, res, () => {}).then(() => {

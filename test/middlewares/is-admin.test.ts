@@ -7,6 +7,7 @@ import { createResponse } from "../createResponse";
 import HttpException from "../../src/util/HttpException";
 import UserService from "../../src/services/database/UserService";
 import { ISavedUser } from "../../src/models/user";
+import { initServices } from "../initServices";
 
 const savedUser: ISavedUser = {
     id: "",
@@ -33,14 +34,7 @@ describe("isAdmin middleware", () => {
         nextCalled = true;
     }) as unknown as NextFunction;
 
-    before(() => {
-        UserService.init({
-            save: async () => savedUser,
-            update: async () => savedUser,
-            findByEmail: async () => null,
-            findById: async () => null,
-        });
-    });
+    before(() => initServices());
 
     it("should throw 'User not found.' if user was not found", (done) => {
         isAdmin(req, res, next).then(() => {

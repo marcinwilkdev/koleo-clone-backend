@@ -6,17 +6,12 @@ import { isAuth } from "../../src/middlewares/is-auth";
 import WebTokenService from "../../src/services/other/WebTokenService";
 
 import { createResponse } from "../createResponse";
+import { initServices } from "../initServices";
 
 describe("optionalAuth middleware", () => {
     const res = createResponse();
 
-    before(() => {
-        WebTokenService.init({
-            secret: "",
-            sign: () => "",
-            verify: () => "",
-        });
-    });
+    before(() => initServices());
 
     it("should throw an error when no Authorization header is present", () => {
         const req = {
