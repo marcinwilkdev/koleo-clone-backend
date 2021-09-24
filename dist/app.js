@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var mongoose_1 = __importDefault(require("mongoose"));
+var helmet_1 = __importDefault(require("helmet"));
+var compression_1 = __importDefault(require("compression"));
 var errors_1 = require("./middlewares/errors");
 var headers_1 = require("./middlewares/headers");
 var auth_1 = __importDefault(require("./routes/auth"));
@@ -34,6 +36,8 @@ TicketService_1.default.init(new MongooseTicketService_1.default());
 UserService_1.default.init(new MongooseUserService_1.default());
 ConnectionService_1.default.init(new MongooseConnectionService_1.default());
 var app = express_1.default();
+app.use(helmet_1.default());
+app.use(compression_1.default());
 app.use(headers_1.setCORSHeaders);
 app.use(express_1.default.json());
 app.use("/auth", auth_1.default);
@@ -44,8 +48,8 @@ app.use(errors_1.errorsHandler);
 mongoose_1.default
     .connect("mongodb+srv://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@cluster0.hew9q.mongodb.net/" + process.env.DB_NAME + "?retryWrites=true&w=majority")
     .then(function () {
-    return app.listen(8080, function () {
-        return console.log("SERVER STARTED ON http://localhost:8080");
+    return app.listen(process.env.PORT || 8080, function () {
+        return console.log("SERVER STARTED");
     });
 })
     .catch(function (err) { return console.log(err); });
