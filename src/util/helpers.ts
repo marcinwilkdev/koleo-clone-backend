@@ -1,5 +1,6 @@
 import { NextFunction, Request } from "express";
 import { validationResult } from "express-validator";
+
 import { ISavedConnection } from "../models/connection";
 import UserService from "../services/database/UserService";
 
@@ -30,7 +31,7 @@ export const validateRequest = (req: Request) => {
     }
 };
 
-export const getDiscount = async (req: Request) => {
+export const getUserDiscount = async (req: Request) => {
     if (req.userId) {
         const user = await UserService.getInstance().findById(req.userId);
 
@@ -40,17 +41,4 @@ export const getDiscount = async (req: Request) => {
     }
 
     return 0;
-};
-
-export const getConnectionPrice = (
-    connection: ISavedConnection,
-    discount: number
-) => {
-    let price = connection.cities
-        .slice(0, connection.cities.length - 1)
-        .reduce((prev, curr) => prev + curr.price, 0);
-
-    price *= 1 - discount;
-
-    return price;
 };

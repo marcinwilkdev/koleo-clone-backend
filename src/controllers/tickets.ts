@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import TicketService from "../services/database/TicketService";
 
-import { getConnectionPrice, getDiscount, handleErrors } from "../util/helpers";
+import { getUserDiscount, handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
 import { ITicket } from "../models/ticket";
@@ -15,6 +15,7 @@ import {
 } from "./types/ticket";
 import ConnectionService from "../services/database/ConnectionService";
 import { ISavedConnection } from "../models/connection";
+import { getConnectionPrice } from "./connections";
 
 const TICKETS_PER_PAGE = 10;
 
@@ -61,7 +62,7 @@ export const createTicket = async (
         const date = cities[departureCityIndex].date;
         const trainType = connection.trainType;
 
-        const discount = await getDiscount(req);
+        const discount = await getUserDiscount(req);
 
         const price = getConnectionPrice(slicedConnection, discount);
 
@@ -101,6 +102,13 @@ export const getTickets = async (
             TICKETS_PER_PAGE,
             pageNumber
         );
+
+        tickets.sort((first, second) => {
+            const firstDateInMilliseconds = first.date.getTime();
+            const secondDateInMilliseconds = second.date.getTime();
+
+            return firstDateInMilliseconds - secondDateInMilliseconds;
+        })
 
         const responseBody: GetTicketsResponseBody = {
             message: "Tickets fetched successfully.",

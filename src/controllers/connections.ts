@@ -1,13 +1,38 @@
 import { NextFunction, Request, Response } from "express";
-import { IConnection, ISavedConnectionWithPrice } from "../models/connection";
+import {
+    IConnection,
+    ISavedConnection,
+    ISavedConnectionWithPrice,
+} from "../models/connection";
 import ConnectionService from "../services/database/ConnectionService";
-import UserService from "../services/database/UserService";
-import { getConnectionPrice, getDiscount, handleErrors } from "../util/helpers";
+import { getUserDiscount, handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 import {
     AddConnectionResponseBody,
     FindConnectionsResponseBody,
 } from "./types/connections";
+
+const sortConnectionsByDepartureDate = (connections: ISavedConnection[]) => {
+    connections.sort((first, second) => {
+        const firstDepartureDate = first.cities[0].date;
+        const secondDepartureDate = second.cities[0].date;
+
+        return firstDepartureDate.getTime() - secondDepartureDate.getTime();
+    });
+};
+
+export const getConnectionPrice = (
+    connection: ISavedConnection,
+    discount: number
+) => {
+    let price = connection.cities
+        .slice(0, connection.cities.length - 1)
+        .reduce((prev, curr) => prev + curr.price, 0);
+
+    price *= 1 - discount;
+
+    return price;
+};
 
 export const addConnection = async (
     req: Request,
@@ -44,21 +69,26 @@ export const findConnections = async (
             throw new HttpException("Couldn't find connections.", 404);
         }
 
+        const discount = await getUserDiscount(req);
+
         const connections =
             await ConnectionService.getInstance().getConnectionsByCities(
                 from,
                 to
             );
 
-        const discount = await getDiscount(req);
+        sortConnectionsByDepartureDate(connections);
 
         const connectionsWithPrice: ISavedConnectionWithPrice[] =
             connections.map((connection) => {
-                const price = getConnectionPrice(connection, discount);
+                const connectionPrice = getConnectionPrice(
+                    connection,
+                    discount
+                );
 
                 return {
                     ...connection,
-                    price,
+                    price: connectionPrice,
                 };
             });
 
