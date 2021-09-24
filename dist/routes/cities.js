@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express_1 = require("express");
+var express_validator_1 = require("express-validator");
+var cities_1 = require("../controllers/cities");
+var is_admin_1 = require("../middlewares/is-admin");
+var is_auth_1 = require("../middlewares/is-auth");
+var router = express_1.Router();
+router.get("/list", cities_1.getCities);
+router.put("/add", is_auth_1.isAuth, is_admin_1.isAdmin, express_validator_1.body("name").notEmpty(), cities_1.addCity);
+exports.default = router;
