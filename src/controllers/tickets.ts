@@ -59,7 +59,7 @@ export const createTicket = async (
             cities: slicedCities,
         };
 
-        const date = cities[departureCityIndex].date;
+        const date = new Date();
         const trainType = connection.trainType;
 
         const discount = await getUserDiscount(req);
