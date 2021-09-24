@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { NextFunction, Request } from "express";
 import { expect } from "chai";
 
 import { isAuth } from "../../src/middlewares/is-auth";
@@ -6,9 +6,16 @@ import { isAuth } from "../../src/middlewares/is-auth";
 import WebTokenService from "../../src/services/other/WebTokenService";
 
 import { createResponse } from "../createResponse";
+import HttpException from "../../src/util/HttpException";
 
 describe("isAuth middleware", () => {
     const res = createResponse();
+
+    let exception: null | HttpException;
+
+    const next = ((exc: HttpException) => {
+        exception = exc;
+    }) as unknown as NextFunction;
 
     before(() => {
         WebTokenService.init({
@@ -23,8 +30,10 @@ describe("isAuth middleware", () => {
             get: () => "",
         } as unknown as Request;
 
-        expect(isAuth.bind(null, req, res, () => {})).to.throw(
-            "Authorization failed."
+        isAuth(req, res, next);
+
+        expect(exception).to.have.property(
+            "message", "Authorization failed."
         );
     });
 
@@ -33,8 +42,10 @@ describe("isAuth middleware", () => {
             get: () => "Bearer",
         } as unknown as Request;
 
-        expect(isAuth.bind(null, req, res, () => {})).to.throw(
-            "Authorization failed."
+        isAuth(req, res, next);
+
+        expect(exception).to.have.property(
+            "message", "Authorization failed."
         );
     });
 
@@ -43,8 +54,10 @@ describe("isAuth middleware", () => {
             get: () => "Bearer xyz",
         } as unknown as Request;
 
-        expect(isAuth.bind(null, req, res, () => {})).to.throw(
-            "Authorization failed."
+        isAuth(req, res, next);
+
+        expect(exception).to.have.property(
+            "message", "Authorization failed."
         );
     });
 
