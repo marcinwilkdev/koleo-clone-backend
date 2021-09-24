@@ -95,7 +95,7 @@ describe("tickets controller - getTickets", () => {
 
     before(() => initServices());
 
-    it("should send correct response if ticket have been fetched", (done) => {
+    it("should send correct response if tickets have been fetched", (done) => {
         getTickets(req, res, () => {}).then(() => {
             expect(res).to.have.property("statusCode", 200);
             expect(res.body).to.have.property(

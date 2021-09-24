@@ -13,7 +13,7 @@ describe("optionalAuth middleware", () => {
 
     before(() => initServices());
 
-    it("should throw an error when no Authorization header is present", () => {
+    it("shouldn't set req.userId when no Authorization header is present", () => {
         const req = {
             get: () => "",
         } as unknown as Request;
@@ -23,7 +23,7 @@ describe("optionalAuth middleware", () => {
         expect(req).not.to.have.property("userId");
     });
 
-    it("should throw an error when Authorization header is incomplete", () => {
+    it("shouldn't set req.userId when Authorization header is incomplete", () => {
         const req = {
             get: () => "Bearer",
         } as unknown as Request;
@@ -33,7 +33,7 @@ describe("optionalAuth middleware", () => {
         expect(req).not.to.have.property("userId");
     });
 
-    it("should throw an error when Authorization header token is wrong", () => {
+    it("shouldn't set req.userId when Authorization header token is wrong", () => {
         const req = {
             get: () => "Bearer xyz",
         } as unknown as Request;

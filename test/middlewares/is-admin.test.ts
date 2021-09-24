@@ -64,8 +64,6 @@ describe("isAdmin middleware", () => {
         nextCalled = false;
 
         isAdmin(req, res, next).then(() => {
-            console.log(nextCalled, exception);
-
             expect(exception).to.be.equal(undefined);
             expect(nextCalled).to.be.equal(true);
 
