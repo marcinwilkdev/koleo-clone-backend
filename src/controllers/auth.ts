@@ -7,7 +7,7 @@ import UserService from "../services/database/UserService";
 import { handleErrors, validateRequest } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
-import { IUser } from "../models/user";
+import { ISavedUser, IUser } from "../models/user";
 
 import {
     SetDataRequestBody,
@@ -17,6 +17,16 @@ import {
     SignupRequestBody,
     SignupResponseBody,
 } from "./types/auth";
+
+const generateUserData = (user: ISavedUser) => {
+    let userData = user.email;
+
+    if (user.firstName) {
+        userData = user.firstName;
+    }
+
+    return userData;
+};
 
 export const signin = async (
     req: Request,
@@ -44,13 +54,12 @@ export const signin = async (
             throw new HttpException("Wrong password.", 401);
         }
 
-        const token = WebTokenService.getInstance().sign({ userId: user.id }, 1);
+        const token = WebTokenService.getInstance().sign(
+            { userId: user.id },
+            1
+        );
 
-        let userData = user.email;
-
-        if (user.firstName) {
-            userData = user.firstName;
-        }
+        const userData = generateUserData(user);
 
         const responseBody: SigninResponseBody = {
             message: "Logged in succesfully.",
@@ -61,6 +70,7 @@ export const signin = async (
         res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };
 
@@ -75,7 +85,10 @@ export const signup = async (
         const body = req.body as SignupRequestBody;
 
         const email = body.email;
-        const hashedPassword = await EncryptionService.getInstance().hash(body.password, 12);
+        const hashedPassword = await EncryptionService.getInstance().hash(
+            body.password,
+            12
+        );
 
         const user: IUser = {
             email,
@@ -84,9 +97,12 @@ export const signup = async (
 
         const savedUser = await UserService.getInstance().save(user);
 
-        const token = WebTokenService.getInstance().sign({ userId: savedUser.id }, 1);
+        const token = WebTokenService.getInstance().sign(
+            { userId: savedUser.id },
+            1
+        );
 
-        const userData = savedUser.email;
+        const userData = generateUserData(savedUser);
 
         const responseBody: SignupResponseBody = {
             message: "User created succesfully.",
@@ -97,6 +113,7 @@ export const signup = async (
         res.status(201).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };
 
@@ -128,11 +145,7 @@ export const setData = async (
 
         const savedUser = await UserService.getInstance().update(user);
 
-        let userData = savedUser.email;
-
-        if (savedUser.firstName) {
-            userData = savedUser.firstName;
-        }
+        const userData = generateUserData(savedUser);
 
         const responseBody: SetDataResponseBody = {
             message: "User data set succesfully.",
@@ -142,5 +155,6 @@ export const setData = async (
         res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };

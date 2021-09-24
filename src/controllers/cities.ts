@@ -24,6 +24,7 @@ export const getCities = async (
         res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };
 
@@ -32,15 +33,9 @@ export const addCity = async (
     res: Response,
     next: NextFunction
 ) => {
-    const body = req.body as ICity;
-
-    const name = body.name;
+    const city = req.body as ICity;
 
     try {
-        const city: ICity = {
-            name,
-        };
-
         await CityService.getInstance().save(city);
 
         const responseBody: AddCityResponseBody = {
@@ -50,5 +45,6 @@ export const addCity = async (
         res.status(201).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { connections } from "mongoose";
 import {
     IConnection,
     ISavedConnection,
@@ -19,6 +20,24 @@ const sortConnectionsByDepartureDate = (connections: ISavedConnection[]) => {
 
         return firstDepartureDate.getTime() - secondDepartureDate.getTime();
     });
+};
+
+const generateConnectionsWithPrices = (
+    connections: ISavedConnection[],
+    discount: number
+) => {
+    const connectionsWithPrices: ISavedConnectionWithPrice[] = connections.map(
+        (connection) => {
+            const connectionPrice = getConnectionPrice(connection, discount);
+
+            return {
+                ...connection,
+                price: connectionPrice,
+            };
+        }
+    );
+
+    return connectionsWithPrices;
 };
 
 export const getConnectionPrice = (
@@ -42,9 +61,7 @@ export const addConnection = async (
     const connection = req.body as IConnection;
 
     try {
-        const savedConnection = await ConnectionService.getInstance().save(
-            connection
-        );
+        await ConnectionService.getInstance().save(connection);
 
         const responseBody: AddConnectionResponseBody = {
             message: "Connection added succesfully.",
@@ -53,6 +70,7 @@ export const addConnection = async (
         res.status(201).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };
 
@@ -79,26 +97,19 @@ export const findConnections = async (
 
         sortConnectionsByDepartureDate(connections);
 
-        const connectionsWithPrice: ISavedConnectionWithPrice[] =
-            connections.map((connection) => {
-                const connectionPrice = getConnectionPrice(
-                    connection,
-                    discount
-                );
-
-                return {
-                    ...connection,
-                    price: connectionPrice,
-                };
-            });
+        const connectionsWithPrices = generateConnectionsWithPrices(
+            connections,
+            discount
+        );
 
         const responseBody: FindConnectionsResponseBody = {
             message: "Connections fetched succesfully.",
-            connections: connectionsWithPrice,
+            connections: connectionsWithPrices,
         };
 
         res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };

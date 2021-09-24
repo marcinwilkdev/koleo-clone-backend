@@ -47,6 +47,7 @@ describe("auth controller - signin", () => {
     before(() => {
         UserService.init({
             save: async () => savedUser,
+            update: async () => savedUser,
             findByEmail: async () => null,
             findById: async () => null,
         });
@@ -107,6 +108,7 @@ describe("auth controller - signup", () => {
     before(() => {
         UserService.init({
             save: async () => savedUser,
+            update: async () => savedUser,
             findByEmail: async () => null,
             findById: async () => null,
         });
@@ -148,6 +150,7 @@ describe("auth controller - setData", () => {
     before(() => {
         UserService.init({
             save: async () => savedUser,
+            update: async () => savedUser,
             findByEmail: async () => null,
             findById: async () => null,
         });

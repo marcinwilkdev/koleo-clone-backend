@@ -5,7 +5,7 @@ import TicketService from "../services/database/TicketService";
 import { getUserDiscount, handleErrors } from "../util/helpers";
 import HttpException from "../util/HttpException";
 
-import { ITicket } from "../models/ticket";
+import { ISavedTicket, ITicket } from "../models/ticket";
 
 import {
     CreateTicketRequestBody,
@@ -18,6 +18,43 @@ import { ISavedConnection } from "../models/connection";
 import { getConnectionPrice } from "./connections";
 
 const TICKETS_PER_PAGE = 10;
+
+const sortTicketsByDate = (tickets: ISavedTicket[]) => {
+    tickets.sort((first, second) => {
+        const firstDateInMilliseconds = first.date.getTime();
+        const secondDateInMilliseconds = second.date.getTime();
+
+        return firstDateInMilliseconds - secondDateInMilliseconds;
+    });
+};
+
+const trimConnection = (
+    connection: ISavedConnection,
+    departureCity: string,
+    arrivalCity: string
+) => {
+    const cities = connection.cities;
+
+    const arrivalCityIndex = cities.findIndex(
+        (city) => city.city.name === arrivalCity
+    );
+    const departureCityIndex = cities.findIndex(
+        (city) => city.city.name === departureCity
+    );
+
+    if (arrivalCityIndex < 0 || departureCityIndex < 0) {
+        throw new HttpException("City not found.", 404);
+    }
+
+    const preparedCities = cities.slice(departureCityIndex, arrivalCityIndex + 1);
+
+    const preparedConnection: ISavedConnection = {
+        ...connection,
+        cities: preparedCities,
+    };
+
+    return preparedConnection;
+};
 
 export const createTicket = async (
     req: Request,
@@ -36,35 +73,14 @@ export const createTicket = async (
             throw new HttpException("Connection not found.", 404);
         }
 
-        const cities = connection.cities;
-
-        const arrivalCityIndex = cities.findIndex(
-            (city) => city.city.name === arrivalCity
-        );
-        const departureCityIndex = cities.findIndex(
-            (city) => city.city.name === departureCity
-        );
-
-        if (arrivalCityIndex < 0 || departureCityIndex < 0) {
-            throw new HttpException("City not found.", 404);
-        }
-
-        const slicedCities = cities.slice(
-            departureCityIndex,
-            arrivalCityIndex + 1
-        );
-
-        const slicedConnection: ISavedConnection = {
-            ...connection,
-            cities: slicedCities,
-        };
-
         const date = new Date();
         const trainType = connection.trainType;
 
+        const preparedConnection = trimConnection(connection, departureCity, arrivalCity);
+
         const discount = await getUserDiscount(req);
 
-        const price = getConnectionPrice(slicedConnection, discount);
+        const price = getConnectionPrice(preparedConnection, discount);
 
         const ticket: ITicket = {
             date,
@@ -85,6 +101,7 @@ export const createTicket = async (
         res.status(201).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };
 
@@ -103,12 +120,7 @@ export const getTickets = async (
             pageNumber
         );
 
-        tickets.sort((first, second) => {
-            const firstDateInMilliseconds = first.date.getTime();
-            const secondDateInMilliseconds = second.date.getTime();
-
-            return firstDateInMilliseconds - secondDateInMilliseconds;
-        })
+        sortTicketsByDate(tickets);
 
         const responseBody: GetTicketsResponseBody = {
             message: "Tickets fetched successfully.",
@@ -118,6 +130,7 @@ export const getTickets = async (
         res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };
 
@@ -140,5 +153,6 @@ export const getTicketsCount = async (
         res.status(200).json(responseBody);
     } catch (err) {
         handleErrors(err, next);
+        return;
     }
 };
