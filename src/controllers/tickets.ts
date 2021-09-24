@@ -69,11 +69,9 @@ export const createTicket = async (
     const ownerId = req.userId!;
 
     try {
-        if(!body.arrivalCity || !body.departureCity || !body.id) {
-            throw HttpException.wrongData();
-        }
-
-        const connection = await ConnectionService.getInstance().findById(body.id);
+        const connection = await ConnectionService.getInstance().findById(
+            body.id
+        );
 
         if (!connection) {
             throw new HttpException("Connection not found.", 404);

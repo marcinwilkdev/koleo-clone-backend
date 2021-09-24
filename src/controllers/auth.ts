@@ -84,10 +84,6 @@ export const signup = async (
 
         const body = req.body as SignupRequestBody;
 
-        if(!body.email || !body.password) {
-            throw HttpException.wrongData();
-        }
-
         const email = body.email;
         const hashedPassword = await EncryptionService.getInstance().hash(
             body.password,
@@ -131,10 +127,6 @@ export const setData = async (
     const userId = req.userId!;
 
     try {
-        if(!body.discount || !body.firstName || !body.lastName || !body.dateOfBirth) {
-            throw HttpException.wrongData();
-        }
-        
         const user = await UserService.getInstance().findById(userId);
 
         if (!user) {

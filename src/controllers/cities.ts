@@ -7,7 +7,6 @@ import { handleErrors } from "../util/helpers";
 import { ICity } from "../models/city";
 
 import { AddCityResponseBody, GetCitiesResponseBody } from "./types/cities";
-import HttpException from "../util/HttpException";
 
 export const getCities = async (
     req: Request,
@@ -37,10 +36,6 @@ export const addCity = async (
     const city = req.body as ICity;
 
     try {
-        if(!city.name) {
-            throw HttpException.wrongData();
-        }
-        
         await CityService.getInstance().save(city);
 
         const responseBody: AddCityResponseBody = {

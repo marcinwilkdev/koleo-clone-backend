@@ -40,6 +40,17 @@ router.put(
     signup
 );
 router.post("/signin", signin);
-router.put("/set-data", isAuth, setData);
+router.put("/set-data", isAuth, [
+    body("discount").trim().custom((value, {req}) => {
+        if(value !== "true" && value !== "false") {
+            return false;
+        }
+
+        return true;
+    }),
+    body("firstName").trim().notEmpty(),
+    body("lastName").trim().notEmpty(),
+    body("dateOfBirth").isDate(),
+], setData);
 
 export default router;
