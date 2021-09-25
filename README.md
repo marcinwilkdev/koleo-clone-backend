@@ -21,7 +21,7 @@ Implemented connections:
 * Wrocław Główny - Wrocław Mikołajów - Wrocław Nadodrze - Wrocław Psie Pole
 
 Project features:
-* Connection dates aren't implemented so you will see the same connections on every date.
+* Connection dates aren't implemented so you will se the same connections on every date.
 * Connection changes aren't implemented so you have to choose direct route to see connection.
 * If you choose discount for created user you will have 50% discount on your tickets.
 
