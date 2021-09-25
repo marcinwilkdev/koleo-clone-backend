@@ -13,17 +13,27 @@ Simple backend for koleo-clone project created with Node.js, Express, MongoDB an
 
 ## koleo-clone project
 ---
-This app is part of koleo-clone project which consist of koleo-clone-backend and [koleo-clone-frontend](https://github.com/marolis1239/koleo-clone-frontend) also written by me with React.
+This app is part of koleo-clone project which consist of koleo-clone-backend and [koleo-clone-frontend](https://github.com/marolis1239/koleo-clone-frontend) also written by me in React.js.
 
 You can play with whole project deployed to heroku (backend) and firebase (frontend) by clicking this [URL](https://koleo-clone.web.app/).
 
 Implemented connections:
 * Wrocław Główny - Wrocław Mikołajów - Wrocław Nadodrze - Wrocław Psie Pole
+* Wrocław Psie Pole - Wrocław Nadodrze - Wrocław Mikołajów - Wrocław Główny
+* Wrocław Główny - Wrocław Mikołajów - Wrocław Popowice - Wrocław Osobowice
+* Wrocław Osobowice - Wrocław Popowice - Wrocław Mikołajów - Wrocław Główny
+* Wrocław Główny - Wrocław Muchobór - Wrocław Nowy Dwór - Wrocław Żerniki - Wrocław Leśnica
+* Wrocław Leśnica - Wrocław Żerniki - Wrocław Nowy Dwór - Wrocław Muchobór - Wrocław Główny
+* Wrocław Główny - Wrocław Grabiszyn - Wrocław Zachodni
+* Wrocław Zachodni - Wrocław Grabiszyn - Wrocław Główny
+* Wrocław Główny - Wrocław Muchobór - Wrocław Kuźniki - Wrocław Stadion
+* Wrocław Stadion - Wrocław Kuźniki - Wrocław Muchobór - Wrocław Główny
 
 Project features:
-* Connection dates aren't implemented so you will se the same connections on every date.
+* Connection dates aren't implemented so you will see the same connections on every date.
 * Connection changes aren't implemented so you have to choose direct route to see connection.
 * If you choose discount for created user you will have 50% discount on your tickets.
+* Resetting password isn't implemented.
 
 ## General info
 ---
@@ -31,7 +41,7 @@ This project is simple backend for koleo-clone project. It provides REST endpoin
 
 ## Features
 ---
-* /auth routes for managing user creation, authentication and setting user data
+* /auth routes for managing user creation, authentication with jwt tokens and setting user data
 * /cities routes for adding and fetching cities from the app
 * /connections routes for adding and fetching connections from the app
 * /tickets routes for creating and fetching tickets from the app
@@ -79,6 +89,15 @@ $ npm run dev
 ```
 ```
 $ yarn dev
+```
+
+To run unit tests:
+
+```
+$ npm test
+```
+```
+$ yarn test
 ```
 
 To run production server:
