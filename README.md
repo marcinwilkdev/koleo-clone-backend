@@ -20,9 +20,9 @@ You can play with whole project deployed to heroku (backend) and firebase (front
 Implemented connections:
 * Wrocław Główny - Wrocław Mikołajów - Wrocław Nadodrze - Wrocław Psie Pole
 
-Connection dates aren't implemented so you will se the same connections on every date.
-Connection changes aren't implemented so you have to choose direct route to see connection.
-If you choose discount for created user you will have 50% discount on your tickets.
+* Connection dates aren't implemented so you will se the same connections on every date.
+* Connection changes aren't implemented so you have to choose direct route to see connection.
+* If you choose discount for created user you will have 50% discount on your tickets.
 
 ## General info
 ---
