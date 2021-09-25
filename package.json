@@ -1,15 +1,15 @@
 {
-  "name": "backend",
+  "name": "koleo-clone-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Simple backend created for koleo-clone project",
+  "main": "dist/app.js",
   "scripts": {
     "test": "mocha --require ts-node/register 'test/**/*.test.ts'",
     "start": "node dist/app.js",
     "dev": "nodemon dist/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Marcin Wilk",
   "license": "ISC",
   "dependencies": {
     "@types/bcryptjs": "^2.4.2",

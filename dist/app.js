@@ -46,7 +46,7 @@ app.use("/cities", cities_1.default);
 app.use("/connections", connections_1.default);
 app.use(errors_1.errorsHandler);
 mongoose_1.default
-    .connect("mongodb+srv://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@cluster0.hew9q.mongodb.net/" + process.env.DB_NAME + "?retryWrites=true&w=majority")
+    .connect(process.env.DB_URL)
     .then(function () {
     return app.listen(process.env.PORT || 8080, function () {
         return console.log("SERVER STARTED");

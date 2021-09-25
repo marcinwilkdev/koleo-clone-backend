@@ -57,9 +57,7 @@ app.use("/connections", connectionsRoutes);
 app.use(errorsHandler);
 
 mongoose
-    .connect(
-        `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.hew9q.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
-    )
+    .connect(process.env.DB_URL as string)
     .then(() =>
         app.listen(process.env.PORT || 8080, () =>
             console.log("SERVER STARTED")
