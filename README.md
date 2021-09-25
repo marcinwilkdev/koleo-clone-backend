@@ -13,9 +13,9 @@ Simple backend for koleo-clone project created with Node.js, Express, MongoDB an
 
 ## koleo-clone project
 ---
-This app is part of koleo-clone project which consist of koleo-clone-backend and [koleo-clone-frontend]("https://github.com/marolis1239/koleo-clone-frontend") also written by me with React.
+This app is part of koleo-clone project which consist of koleo-clone-backend and [koleo-clone-frontend](https://github.com/marolis1239/koleo-clone-frontend) also written by me with React.
 
-You can play with whole project deployed to heroku (backend) and firebase (frontend) by clicking this [URL]("https://koleo-clone.web.app/").
+You can play with whole project deployed to heroku (backend) and firebase (frontend) by clicking this [URL](https://koleo-clone.web.app/).
 
 Implemented connections:
 * Wrocław Główny - Wrocław Mikołajów - Wrocław Nadodrze - Wrocław Psie Pole
@@ -47,7 +47,7 @@ Project is created with:
 ## Setup
 ---
 koleo-clone-backend requires Node.js v10+ and MongoDB database to run.
-(You can use free mongoDB hosting by [MongoDB Atlas]("https://www.mongodb.com/cloud/atlas")).
+(You can use free mongoDB hosting by [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)).
 
 Then you have to provide .env file in the root folder with following variables declared:
 ```
