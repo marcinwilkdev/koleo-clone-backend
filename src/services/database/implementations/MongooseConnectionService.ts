@@ -5,7 +5,6 @@ import {
 } from "../../../models/connection";
 
 import Connection from "../../../models/connection";
-import HttpException from "../../../util/HttpException";
 
 import { IConnectionService } from "../ConnectionService";
 
@@ -73,6 +72,10 @@ export default class MongooseConnectionService implements IConnectionService {
             });
 
         return preparedConnections;
+    }
+
+    async deleteAll() {
+        await Connection.deleteMany({});
     }
 
     private formatConnection(connection: IConnectionDocument) {
