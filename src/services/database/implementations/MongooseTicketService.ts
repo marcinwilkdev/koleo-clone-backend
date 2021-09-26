@@ -38,6 +38,10 @@ export default class MongooseTicketService implements ITicketService {
         return formattedTickets;
     }
 
+    async deleteAll() {
+        await Ticket.deleteMany({});
+    }
+
     private formatTicket(ticket: ITicketDocument): ISavedTicket {
         return {
             id: ticket._id.toString(),
