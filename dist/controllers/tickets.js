@@ -96,10 +96,10 @@ var createTicket = function (req, res, next) { return __awaiter(void 0, void 0, 
                 departureCity = body.departureCity;
                 arrivalCity = body.arrivalCity;
                 preparedConnection = trimConnection(connection, departureCity, arrivalCity);
-                return [4 /*yield*/, helpers_1.getUserDiscount(req)];
+                return [4 /*yield*/, (0, helpers_1.getUserDiscount)(req)];
             case 3:
                 discount = _a.sent();
-                price = connections_1.getConnectionPrice(preparedConnection, discount);
+                price = (0, connections_1.getConnectionPrice)(preparedConnection, discount);
                 ticket = {
                     date: date,
                     arrivalCity: arrivalCity,
@@ -119,7 +119,7 @@ var createTicket = function (req, res, next) { return __awaiter(void 0, void 0, 
                 return [3 /*break*/, 6];
             case 5:
                 err_1 = _a.sent();
-                helpers_1.handleErrors(err_1, next);
+                (0, helpers_1.handleErrors)(err_1, next);
                 return [2 /*return*/];
             case 6: return [2 /*return*/];
         }
@@ -148,7 +148,7 @@ var getTickets = function (req, res, next) { return __awaiter(void 0, void 0, vo
                 return [3 /*break*/, 4];
             case 3:
                 err_2 = _a.sent();
-                helpers_1.handleErrors(err_2, next);
+                (0, helpers_1.handleErrors)(err_2, next);
                 return [2 /*return*/];
             case 4: return [2 /*return*/];
         }
@@ -175,7 +175,7 @@ var getTicketsCount = function (req, res, next) { return __awaiter(void 0, void 
                 return [3 /*break*/, 4];
             case 3:
                 err_3 = _a.sent();
-                helpers_1.handleErrors(err_3, next);
+                (0, helpers_1.handleErrors)(err_3, next);
                 return [2 /*return*/];
             case 4: return [2 /*return*/];
         }

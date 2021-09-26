@@ -59,7 +59,7 @@ var getCities = function (req, res, next) { return __awaiter(void 0, void 0, voi
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
-                helpers_1.handleErrors(err_1, next);
+                (0, helpers_1.handleErrors)(err_1, next);
                 return [2 /*return*/];
             case 3: return [2 /*return*/];
         }
@@ -85,7 +85,7 @@ var addCity = function (req, res, next) { return __awaiter(void 0, void 0, void 
                 return [3 /*break*/, 4];
             case 3:
                 err_2 = _a.sent();
-                helpers_1.handleErrors(err_2, next);
+                (0, helpers_1.handleErrors)(err_2, next);
                 return [2 /*return*/];
             case 4: return [2 /*return*/];
         }

@@ -32,3 +32,10 @@ export interface SetDataResponseBody {
     message: string;
     userData: string;
 }
+
+export interface GetDataResponseBody {
+    message: string;
+    firstName: string | null;
+    lastName: string | null;
+    dateOfBirth: Date | null;
+}

@@ -36,7 +36,7 @@ var isAuth = function (req, res, next) {
         req.userId = payload.userId;
     }
     catch (err) {
-        helpers_1.handleErrors(err, next);
+        (0, helpers_1.handleErrors)(err, next);
         return;
     }
     next();

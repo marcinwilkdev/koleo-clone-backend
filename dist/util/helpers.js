@@ -57,7 +57,7 @@ var handleErrors = function (err, next) {
 };
 exports.handleErrors = handleErrors;
 var validateRequest = function (req) {
-    var errors = express_validator_1.validationResult(req);
+    var errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         throw new HttpException_1.default("Validation failed.", 422);
     }

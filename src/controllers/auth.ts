@@ -10,6 +10,7 @@ import HttpException from "../util/HttpException";
 import { ISavedUser, IUser } from "../models/user";
 
 import {
+    GetDataResponseBody,
     SetDataRequestBody,
     SetDataResponseBody,
     SigninRequestBody,
@@ -151,5 +152,32 @@ export const setData = async (
     } catch (err) {
         handleErrors(err, next);
         return;
+    }
+};
+
+export const getData = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const userId = req.userId!;
+
+    try {
+        const user = await UserService.getInstance().findById(userId);
+
+        if (!user) {
+            throw new HttpException("User not found.", 404);
+        }
+
+        const responseBody: GetDataResponseBody = {
+            message: "User data fetched succesfully.",
+            firstName: user.firstName || null,
+            lastName: user.lastName || null,
+            dateOfBirth: user.dateOfBirth || null
+        };
+
+        res.status(200).json(responseBody);
+    } catch (err) {
+        handleErrors(err, next);
     }
 };

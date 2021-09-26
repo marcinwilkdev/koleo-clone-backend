@@ -32,4 +32,4 @@ var ticketSchema = new mongoose_1.Schema({
         ref: "User", // ???
     },
 });
-exports.default = mongoose_1.model("Ticket", ticketSchema);
+exports.default = (0, mongoose_1.model)("Ticket", ticketSchema);

@@ -63,7 +63,7 @@ var sortConnectionsByDepartureDate = function (connections) {
 };
 var generateConnectionsWithPrices = function (connections, discount) {
     var connectionsWithPrices = connections.map(function (connection) {
-        var connectionPrice = exports.getConnectionPrice(connection, discount);
+        var connectionPrice = (0, exports.getConnectionPrice)(connection, discount);
         return __assign(__assign({}, connection), { price: connectionPrice });
     });
     return connectionsWithPrices;
@@ -95,7 +95,7 @@ var addConnection = function (req, res, next) { return __awaiter(void 0, void 0,
                 return [3 /*break*/, 4];
             case 3:
                 err_1 = _a.sent();
-                helpers_1.handleErrors(err_1, next);
+                (0, helpers_1.handleErrors)(err_1, next);
                 return [2 /*return*/];
             case 4: return [2 /*return*/];
         }
@@ -115,7 +115,7 @@ var findConnections = function (req, res, next) { return __awaiter(void 0, void 
                 if (!from || !to) {
                     throw new HttpException_1.default("Couldn't find connections.", 404);
                 }
-                return [4 /*yield*/, helpers_1.getUserDiscount(req)];
+                return [4 /*yield*/, (0, helpers_1.getUserDiscount)(req)];
             case 2:
                 discount = _a.sent();
                 return [4 /*yield*/, ConnectionService_1.default.getInstance().getConnectionsByCities(from, to)];
@@ -131,7 +131,7 @@ var findConnections = function (req, res, next) { return __awaiter(void 0, void 
                 return [3 /*break*/, 5];
             case 4:
                 err_2 = _a.sent();
-                helpers_1.handleErrors(err_2, next);
+                (0, helpers_1.handleErrors)(err_2, next);
                 return [2 /*return*/];
             case 5: return [2 /*return*/];
         }

@@ -16,4 +16,4 @@ var userSchema = new mongoose_1.Schema({
     dateOfBirth: Date,
     isAdmin: Boolean,
 });
-exports.default = mongoose_1.model("User", userSchema);
+exports.default = (0, mongoose_1.model)("User", userSchema);

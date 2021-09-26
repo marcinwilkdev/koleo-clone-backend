@@ -1,7 +1,7 @@
 import { NextFunction, Request } from "express";
 import { expect } from "chai";
 
-import { setData, signin, signup } from "../../src/controllers/auth";
+import { getData, setData, signin, signup } from "../../src/controllers/auth";
 
 import UserService from "../../src/services/database/UserService";
 import EncryptionService from "../../src/services/other/EncryptionService";
@@ -137,3 +137,37 @@ describe("auth controller - setData", () => {
         });
     });
 });
+
+describe("auth controller - getData", () => {
+    const res = createResponse();
+
+    let exception: null | HttpException;
+
+    const next = ((exc: HttpException) => {
+        exception = exc;
+    }) as unknown as NextFunction;
+
+    before(() => initServices());
+
+    it("should throw 'User not found.' if user hasn't been found", (done) => {
+        setData(req, res, next).then(() => {
+            expect(exception).to.have.property("message", "User not found.");
+
+            done();
+        });
+    });
+
+    it("should send correct response if user data has been fetched", (done) => {
+        UserService.getInstance().findById = async () => savedUser;
+
+        getData(req, res, () => {}).then(() => {
+            expect(res).to.have.property("statusCode", 200);
+            expect(res.body).to.have.property(
+                "message",
+                "User data fetched succesfully."
+            );
+
+            done();
+        });
+    });
+})

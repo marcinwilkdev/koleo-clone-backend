@@ -7,4 +7,4 @@ var citySchema = new mongoose_1.Schema({
         required: true,
     },
 });
-exports.default = mongoose_1.model("City", citySchema);
+exports.default = (0, mongoose_1.model)("City", citySchema);

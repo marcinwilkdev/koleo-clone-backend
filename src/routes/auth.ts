@@ -3,7 +3,7 @@ import { body } from "express-validator";
 
 import UserService from "../services/database/UserService";
 
-import { setData, signin, signup } from "../controllers/auth";
+import { getData, setData, signin, signup } from "../controllers/auth";
 
 import { isAuth } from "../middlewares/is-auth";
 
@@ -52,5 +52,6 @@ router.put("/set-data", isAuth, [
     body("lastName").trim().notEmpty(),
     body("dateOfBirth").isDate(),
 ], setData);
+router.get("/get-data", isAuth, getData);
 
 export default router;

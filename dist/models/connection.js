@@ -32,4 +32,4 @@ var connectionSchema = new mongoose_1.Schema({
         required: true,
     },
 });
-exports.default = mongoose_1.model("Connection", connectionSchema);
+exports.default = (0, mongoose_1.model)("Connection", connectionSchema);

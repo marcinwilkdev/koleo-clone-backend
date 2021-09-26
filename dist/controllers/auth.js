@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setData = exports.signup = exports.signin = void 0;
+exports.getData = exports.setData = exports.signup = exports.signin = void 0;
 var WebTokenService_1 = __importDefault(require("../services/other/WebTokenService"));
 var EncryptionService_1 = __importDefault(require("../services/other/EncryptionService"));
 var UserService_1 = __importDefault(require("../services/database/UserService"));
@@ -86,7 +86,7 @@ var signin = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                 return [3 /*break*/, 5];
             case 4:
                 err_1 = _a.sent();
-                helpers_1.handleErrors(err_1, next);
+                (0, helpers_1.handleErrors)(err_1, next);
                 return [2 /*return*/];
             case 5: return [2 /*return*/];
         }
@@ -99,7 +99,7 @@ var signup = function (req, res, next) { return __awaiter(void 0, void 0, void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 3, , 4]);
-                helpers_1.validateRequest(req);
+                (0, helpers_1.validateRequest)(req);
                 body = req.body;
                 email = body.email;
                 return [4 /*yield*/, EncryptionService_1.default.getInstance().hash(body.password, 12)];
@@ -123,7 +123,7 @@ var signup = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                 return [3 /*break*/, 4];
             case 3:
                 err_2 = _a.sent();
-                helpers_1.handleErrors(err_2, next);
+                (0, helpers_1.handleErrors)(err_2, next);
                 return [2 /*return*/];
             case 4: return [2 /*return*/];
         }
@@ -162,10 +162,42 @@ var setData = function (req, res, next) { return __awaiter(void 0, void 0, void 
                 return [3 /*break*/, 5];
             case 4:
                 err_3 = _a.sent();
-                helpers_1.handleErrors(err_3, next);
+                (0, helpers_1.handleErrors)(err_3, next);
                 return [2 /*return*/];
             case 5: return [2 /*return*/];
         }
     });
 }); };
 exports.setData = setData;
+var getData = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var userId, user, responseBody, err_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                userId = req.userId;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, UserService_1.default.getInstance().findById(userId)];
+            case 2:
+                user = _a.sent();
+                if (!user) {
+                    throw new HttpException_1.default("User not found.", 404);
+                }
+                responseBody = {
+                    message: "User data fetched succesfully.",
+                    firstName: user.firstName || null,
+                    lastName: user.lastName || null,
+                    dateOfBirth: user.dateOfBirth || null
+                };
+                res.status(200).json(responseBody);
+                return [3 /*break*/, 4];
+            case 3:
+                err_4 = _a.sent();
+                (0, helpers_1.handleErrors)(err_4, next);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getData = getData;

@@ -44,9 +44,9 @@ var express_validator_1 = require("express-validator");
 var UserService_1 = __importDefault(require("../services/database/UserService"));
 var auth_1 = require("../controllers/auth");
 var is_auth_1 = require("../middlewares/is-auth");
-var router = express_1.Router();
+var router = (0, express_1.Router)();
 router.put("/signup", [
-    express_validator_1.body("email")
+    (0, express_validator_1.body)("email")
         .isEmail()
         .custom(function (value, _a) {
         var req = _a.req;
@@ -66,8 +66,8 @@ router.put("/signup", [
         });
     })
         .normalizeEmail(),
-    express_validator_1.body("password").trim().isLength({ min: 8 }),
-    express_validator_1.body("confirmPassword")
+    (0, express_validator_1.body)("password").trim().isLength({ min: 8 }),
+    (0, express_validator_1.body)("confirmPassword")
         .trim()
         .custom(function (value, _a) {
         var req = _a.req;
@@ -79,15 +79,16 @@ router.put("/signup", [
 ], auth_1.signup);
 router.post("/signin", auth_1.signin);
 router.put("/set-data", is_auth_1.isAuth, [
-    express_validator_1.body("discount").trim().custom(function (value, _a) {
+    (0, express_validator_1.body)("discount").trim().custom(function (value, _a) {
         var req = _a.req;
         if (value !== "true" && value !== "false") {
             return false;
         }
         return true;
     }),
-    express_validator_1.body("firstName").trim().notEmpty(),
-    express_validator_1.body("lastName").trim().notEmpty(),
-    express_validator_1.body("dateOfBirth").isDate(),
+    (0, express_validator_1.body)("firstName").trim().notEmpty(),
+    (0, express_validator_1.body)("lastName").trim().notEmpty(),
+    (0, express_validator_1.body)("dateOfBirth").isDate(),
 ], auth_1.setData);
+router.get("/get-data", is_auth_1.isAuth, auth_1.getData);
 exports.default = router;

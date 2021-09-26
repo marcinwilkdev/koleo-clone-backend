@@ -5,6 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "test": "mocha --require ts-node/register 'test/**/*.test.ts'",
+    "compile": "tsc",
     "start": "node dist/app.js",
     "dev": "nodemon dist/app.js"
   },
