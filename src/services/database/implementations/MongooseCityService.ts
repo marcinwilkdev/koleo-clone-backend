@@ -21,6 +21,10 @@ export default class MongooseCityService implements ICityService {
         return formattedCity;
     }
 
+    async deleteAll() {
+        await City.deleteMany({});
+    }
+
     private formatCity(city: ICityDocument): ISavedCity {
         return {
             id: city._id.toString(),
