@@ -146,7 +146,9 @@ var setData = function (req, res, next) { return __awaiter(void 0, void 0, void 
                 if (!user) {
                     throw new HttpException_1.default("User not found.", 404);
                 }
-                user.discount = body.discount;
+                if (body.discount) {
+                    user.discount = body.discount;
+                }
                 user.firstName = body.firstName;
                 user.lastName = body.lastName;
                 user.dateOfBirth = body.dateOfBirth;
@@ -186,6 +188,7 @@ var getData = function (req, res, next) { return __awaiter(void 0, void 0, void 
                 }
                 responseBody = {
                     message: "User data fetched succesfully.",
+                    email: user.email,
                     firstName: user.firstName || null,
                     lastName: user.lastName || null,
                     dateOfBirth: user.dateOfBirth || null

@@ -134,7 +134,10 @@ export const setData = async (
             throw new HttpException("User not found.", 404);
         }
 
-        user.discount = body.discount;
+        if(body.discount) {
+            user.discount = body.discount;
+        }
+        
         user.firstName = body.firstName;
         user.lastName = body.lastName;
         user.dateOfBirth = body.dateOfBirth;

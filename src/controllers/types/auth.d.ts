@@ -22,7 +22,7 @@ export interface SignupResponseBody {
 }
 
 export interface SetDataRequestBody {
-    discount: string;
+    discount?: string;
     firstName: string;
     lastName: string;
     dateOfBirth: Date;
