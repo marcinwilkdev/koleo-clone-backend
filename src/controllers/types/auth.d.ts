@@ -34,6 +34,7 @@ export interface SetDataResponseBody {
 }
 
 export interface GetDataResponseBody {
+    email: string;
     message: string;
     firstName: string | null;
     lastName: string | null;

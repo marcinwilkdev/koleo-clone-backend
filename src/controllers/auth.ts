@@ -171,6 +171,7 @@ export const getData = async (
 
         const responseBody: GetDataResponseBody = {
             message: "User data fetched succesfully.",
+            email: user.email,
             firstName: user.firstName || null,
             lastName: user.lastName || null,
             dateOfBirth: user.dateOfBirth || null
