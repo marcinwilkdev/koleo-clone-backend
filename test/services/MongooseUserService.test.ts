@@ -3,11 +3,16 @@ import mongoose from "mongoose";
 import { ISavedUser, IUser } from "../../src/models/user";
 
 import MongooseUserService from "../../src/services/database/implementations/MongooseUserService";
-
-const TEST_DB_URL =
-    "mongodb+srv://root:D7alUq7tPN5yVyxK@cluster0.hew9q.mongodb.net/koleo-dev-test?retryWrites=true&w=majority";
+import { TEST_DB_URL } from "./MongooseDatabase";
 
 const mongooseUserService = new MongooseUserService();
+
+const afterTests = (done: Mocha.Done) => {
+    mongooseUserService
+        .deleteAll()
+        .then(() => mongoose.disconnect())
+        .then(() => done());
+};
 
 const userToSave: IUser = {
     email: "xyz",
@@ -29,12 +34,7 @@ describe("MongooseUserService - save", () => {
         });
     });
 
-    after((done) => {
-        mongooseUserService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
 
 describe("MongooseUserService - findById", () => {
@@ -75,12 +75,7 @@ describe("MongooseUserService - findById", () => {
         });
     });
 
-    after((done) => {
-        mongooseUserService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
 
 describe("MongooseUserService - findByEmail", () => {
@@ -108,12 +103,7 @@ describe("MongooseUserService - findByEmail", () => {
         });
     });
 
-    after((done) => {
-        mongooseUserService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
 
 describe("MongooseUserService - update", () => {
@@ -148,10 +138,5 @@ describe("MongooseUserService - update", () => {
         });
     });
 
-    after((done) => {
-        mongooseUserService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });

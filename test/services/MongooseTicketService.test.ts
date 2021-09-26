@@ -3,11 +3,16 @@ import mongoose from "mongoose";
 import { ITicket } from "../../src/models/ticket";
 
 import MongooseTicketService from "../../src/services/database/implementations/MongooseTicketService";
-
-const TEST_DB_URL =
-    "mongodb+srv://root:D7alUq7tPN5yVyxK@cluster0.hew9q.mongodb.net/koleo-dev-test?retryWrites=true&w=majority";
+import { TEST_DB_URL } from "./MongooseDatabase";
 
 const mongooseTicketService = new MongooseTicketService();
+
+const afterTests = (done: Mocha.Done) => {
+    mongooseTicketService
+        .deleteAll()
+        .then(() => mongoose.disconnect())
+        .then(() => done());
+};
 
 const ticketToSave: ITicket = {
     arrivalCity: "xyz",
@@ -39,12 +44,7 @@ describe("MongooseTicketService - save", () => {
         });
     });
 
-    after((done) => {
-        mongooseTicketService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
 
 describe("MongooseTicketService - countAllByOwnerId", () => {
@@ -72,12 +72,7 @@ describe("MongooseTicketService - countAllByOwnerId", () => {
         });
     });
 
-    after((done) => {
-        mongooseTicketService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
 
 describe("MongooseTicketService - findAllByOwnerIdPaged", () => {
@@ -129,10 +124,5 @@ describe("MongooseTicketService - findAllByOwnerIdPaged", () => {
         });
     });
 
-    after((done) => {
-        mongooseTicketService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });

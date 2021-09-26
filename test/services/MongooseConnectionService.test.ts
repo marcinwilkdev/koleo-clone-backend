@@ -3,11 +3,16 @@ import mongoose from "mongoose";
 
 import { IConnection } from "../../src/models/connection";
 import MongooseConnectionService from "../../src/services/database/implementations/MongooseConnectionService";
-
-const TEST_DB_URL =
-    "mongodb+srv://root:D7alUq7tPN5yVyxK@cluster0.hew9q.mongodb.net/koleo-dev-test?retryWrites=true&w=majority";
+import { TEST_DB_URL } from "./MongooseDatabase";
 
 const mongooseConnectionService = new MongooseConnectionService();
+
+const afterTests = (done: Mocha.Done) => {
+    mongooseConnectionService
+        .deleteAll()
+        .then(() => mongoose.disconnect())
+        .then(() => done());
+};
 
 const connectionToSave: IConnection = {
     cities: [],
@@ -31,12 +36,7 @@ describe("MongooseConnectionService - save", () => {
             });
     });
 
-    after((done) => {
-        mongooseConnectionService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
 
 describe("MongooseConnectionService - findById", () => {
@@ -77,12 +77,7 @@ describe("MongooseConnectionService - findById", () => {
         });
     });
 
-    after((done) => {
-        mongooseConnectionService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
 
 describe("MongooseConnectionService - getConnectionsByCities", () => {
@@ -142,10 +137,5 @@ describe("MongooseConnectionService - getConnectionsByCities", () => {
             });
     });
 
-    after((done) => {
-        mongooseConnectionService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });

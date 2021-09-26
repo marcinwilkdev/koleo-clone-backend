@@ -3,11 +3,16 @@ import mongoose from "mongoose";
 import { ICity } from "../../src/models/city";
 
 import MongooseCityService from "../../src/services/database/implementations/MongooseCityService";
-
-const TEST_DB_URL =
-    "mongodb+srv://root:D7alUq7tPN5yVyxK@cluster0.hew9q.mongodb.net/koleo-dev-test?retryWrites=true&w=majority";
+import { TEST_DB_URL } from "./MongooseDatabase";
 
 const mongooseCityService = new MongooseCityService();
+
+const afterTests = (done: Mocha.Done) => {
+    mongooseCityService
+        .deleteAll()
+        .then(() => mongoose.disconnect())
+        .then(() => done());
+};
 
 const cityToSave: ICity = {
     name: "xyz",
@@ -27,12 +32,7 @@ describe("MongooseCityService - save", () => {
         });
     });
 
-    after((done) => {
-        mongooseCityService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
 
 describe("MongooseCityService - findAll", () => {
@@ -52,10 +52,5 @@ describe("MongooseCityService - findAll", () => {
         });
     });
 
-    after((done) => {
-        mongooseCityService
-            .deleteAll()
-            .then(() => mongoose.disconnect())
-            .then(() => done());
-    });
+    after((done) => afterTests(done));
 });
