@@ -43,6 +43,10 @@ export default class MongooseUserService implements IUserService {
         return formattedUser;
     }
 
+    async deleteAll() {
+        await User.deleteMany({});
+    }
+
     private formatUser(user: IUserDocument): ISavedUser {
         return {
             id: user._id.toString(),
