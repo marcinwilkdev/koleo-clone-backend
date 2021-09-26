@@ -19,7 +19,7 @@ const ticketToSave: ITicket = {
     price: 0,
 };
 
-describe("MongooseConnectionService - save", () => {
+describe("MongooseTicketService - save", () => {
     before((done) => {
         mongoose.connect(TEST_DB_URL).then(() => done());
     });
@@ -47,7 +47,7 @@ describe("MongooseConnectionService - save", () => {
     });
 });
 
-describe("MongooseConnectionService - countAllByOwnerId", () => {
+describe("MongooseTicketService - countAllByOwnerId", () => {
     before((done) => {
         mongoose
             .connect(TEST_DB_URL)
@@ -80,7 +80,7 @@ describe("MongooseConnectionService - countAllByOwnerId", () => {
     });
 });
 
-describe("MongooseConnectionService - findAllByOwnerIdPaged", () => {
+describe("MongooseTicketService - findAllByOwnerIdPaged", () => {
     before((done) => {
         mongoose
             .connect(TEST_DB_URL)

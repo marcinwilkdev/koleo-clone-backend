@@ -53,7 +53,21 @@ describe("MongooseConnectionService - findById", () => {
             });
     });
 
-    it("should return found connection when succeed", (done) => {
+    it("should return null when connection with such id isn't present", (done) => {
+        let wrongId = "5ddf784f9dbb9f1530b96020";
+
+        if (wrongId === id) {
+            wrongId = "5ddf76af01c5992ec4fa1c9c";
+        }
+
+        mongooseConnectionService.findById(wrongId).then((foundConnection) => {
+            expect(foundConnection).to.be.equal(null);
+
+            done();
+        });
+    });
+
+    it("should return found connection when connetion with such id present", (done) => {
         mongooseConnectionService.findById(id).then((foundConnection) => {
             expect(foundConnection).to.have.property("id", id);
             expect(foundConnection).to.have.property("cities");
@@ -105,20 +119,27 @@ describe("MongooseConnectionService - getConnectionsByCities", () => {
     });
 
     it("should return empty array when wrong way", (done) => {
-        mongooseConnectionService.getConnectionsByCities("abc", "xyz").then((foundConnections) => {
-            expect(foundConnections.length).to.be.equal(0);
+        mongooseConnectionService
+            .getConnectionsByCities("abc", "xyz")
+            .then((foundConnections) => {
+                expect(foundConnections.length).to.be.equal(0);
 
-            done();
-        });
+                done();
+            });
     });
 
     it("should return found connections when succeed", (done) => {
-        mongooseConnectionService.getConnectionsByCities("xyz", "abc").then((foundConnections) => {
-            expect(foundConnections.length).to.be.equal(1);
-            expect(foundConnections[0]).to.have.property("trainType", "xyz");
+        mongooseConnectionService
+            .getConnectionsByCities("xyz", "abc")
+            .then((foundConnections) => {
+                expect(foundConnections.length).to.be.equal(1);
+                expect(foundConnections[0]).to.have.property(
+                    "trainType",
+                    "xyz"
+                );
 
-            done();
-        });
+                done();
+            });
     });
 
     after((done) => {
